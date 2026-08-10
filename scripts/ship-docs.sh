@@ -35,7 +35,7 @@ fi
 echo "── 1. 카탈로그 검증"
 python3 scripts/catalog.py || fail "카탈로그 검증 실패"
 
-echo "── 2. 동기화 (artifacts.json · archive.html · 네비 주입)"
+echo "── 2. 동기화 (artifacts.json · 네비 주입)"
 ./scripts/sync-catalog.sh >/dev/null || fail "동기화 실패"
 
 echo "── 3. 문서 점검 (태그·테마·SVG 접근성·미정의 변수)"
