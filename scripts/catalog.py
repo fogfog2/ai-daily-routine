@@ -283,6 +283,14 @@ def validate():
     bad = [s for s in slugs if not _re.fullmatch(r"[a-z0-9-]+", s)]
     assert not bad, f"slug 형식 오류(영문 소문자·숫자·하이픈만): {bad}"
 
+    # 제목·부제·요약은 평문이어야 한다.
+    # HTML 엔티티를 담아 두면 ai.js 가 렌더할 때 한 번 더 이스케이프해
+    # 화면에 '&amp;' 라는 글자가 그대로 보인다. 이스케이프는 HTML 에 넣는 쪽 책임이다.
+    import re as _re2
+    ent = [(d[3], f) for d in DOCS for f in (d[0], d[1], d[5])
+           if _re2.search(r"&(amp|lt|gt|quot|#\d+);", f)]
+    assert not ent, f"제목·부제·요약에 HTML 엔티티가 있습니다(평문으로 쓸 것): {ent}"
+
     stage_ids = {s["id"] for s in STAGES}
     assert all(d[4] in stage_ids for d in DOCS), "미정의 단계 참조"
     empty = [s["name"] for s, items in by_stage() if not items]
