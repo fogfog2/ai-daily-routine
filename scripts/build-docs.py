@@ -5,6 +5,7 @@ site-pages/docs/<slug>.html 각각에:
   · 목록으로 돌아가는 링크 (없으면 추가)
   · 아티팩트 절대주소로 남아 있는 Archive 링크를 내부 경로로 치환
 """
+import html as html_lib
 import pathlib
 import re
 import sys
@@ -44,7 +45,10 @@ NAV_CSS = """
 
 
 def nav_html(title: str) -> str:
-    safe = re.sub(r"<[^>]+>", "", title)
+    # catalog.py 의 제목은 평문이다(&, <, > 를 그대로 담는다).
+    # 여기서 HTML 에 직접 박아 넣으므로 이 시점에 이스케이프한다.
+    # 데이터에 &amp; 를 저장해 두면 JS 쪽에서 이중 이스케이프돼 '&amp;' 가 화면에 보인다.
+    safe = html_lib.escape(re.sub(r"<[^>]+>", "", title), quote=False)
     return (
         f'{NAV_CSS}'
         f'<nav class="site-nav">'
