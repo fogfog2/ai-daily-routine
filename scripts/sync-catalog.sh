@@ -51,7 +51,10 @@ n = sum(1 for i in items if i["local"])
 print(f"  artifacts.json 갱신: {len(items)}편 (내부 {n} / 외부 {len(items)-n})")
 PY
 
-# 3) 문서 페이지에 상단 네비게이션 주입
+# 3) 뉴스 데이터 (archive/*.md → news.json)
+python3 build-news.py
+
+# 4) 문서 페이지에 상단 네비게이션 주입
 python3 build-docs.py | tail -1
 
 echo
