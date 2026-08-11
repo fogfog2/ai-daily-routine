@@ -200,7 +200,7 @@ BODY = r"""
     <p>
       마지막 줄이 중요하다. SAM 은 <strong>분류하지 않는다</strong>.
       경계를 찾는 능력과 이름을 붙이는 능력을 분리한 것이고,
-      그래서 <a href="clip.html">CLIP</a> 같은 모델과 조합해 쓰는 구성이 흔하다.
+      그래서 <a href="clip.html">CLIP</a> 이나 <a href="vision-language-models.html">VLM</a> 과 조합해 쓰는 구성이 흔하다.
     </p>
     <div class="note">
       <b>실무에서는 라벨링 도구로 먼저 자리 잡았다.</b>

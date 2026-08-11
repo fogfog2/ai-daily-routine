@@ -206,10 +206,10 @@ EfficientNet-lite 는 약 4.2% 정확도가 떨어진다.
 |---|---|---|---|---|
 | ~~Depth 추정~~ | 09 특집 | `vision` `detection` | — | **완료 08-11** (4925a18) |
 | ~~ControlNet & 조건부 생성 제어~~ | 03 학습 | `vision` `generative` `enhance` | — | **완료 08-11** (4925a18) |
-| **Few-Shot / Zero-Shot 인식** | 07 응용 | `vision` `feature` | 10회 언급. 메트릭 러닝·CLIP 과 이을 곳이 많다 | 대기 |
-| **Vision-Language 모델** | 07 응용 | `vision` `feature` `systems` | CLIP 이후가 비어 있다. 오픈보캐블러리 검출·분할과 연결 | 대기 |
+| ~~Few-Shot / Zero-Shot 인식~~ | 07 응용 | `vision` `feature` | — | **완료 08-11** (dd61a65) |
+| ~~Vision-Language 모델~~ | 07 응용 | `vision` `feature` `systems` | — | **완료 08-11** (dd61a65) |
 | ~~데이터 파이프라인·라벨링~~ | 06 인프라 | `common` `systems` `training` | — | **완료 08-11** (4925a18) |
-| **실험 관리·재현성** | 06 인프라 | `common` `systems` | 같은 이유. 학습을 실제로 굴리는 이야기가 얇다 | 대기 |
+| ~~실험 관리·재현성~~ | 06 인프라 | `common` `systems` | — | **완료 08-11** (dd61a65) |
 | **NAS 와 하드웨어 인지 설계** | 02 아키텍처 | `vision` `on-device` | 경량 백본이 언급만 하고 지나감 | 대기 |
 | **적대적 예제와 강건성** | 08 평가 | `common` `safety` | 5회 언급. 안전 쪽에서 vision 이 비어 있다 | 대기 |
 | **Optical Flow & 동영상** | 09 특집 | `vision` `detection` | 시간 축이 통째로 없다 | 대기 |
