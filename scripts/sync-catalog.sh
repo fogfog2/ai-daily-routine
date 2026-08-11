@@ -24,25 +24,31 @@ python3 catalog.py
 
 python3 - "$PAGES" <<'PY'
 import json, pathlib, sys
-from catalog import STAGES, DOCS, url, href, validate
+from catalog import STAGES, TAGS, DOCS, url, href, validate
 
 validate()
 pages = pathlib.Path(sys.argv[1])
 docs_dir = pages / "docs"
 
 items = []
-for t, sub, uid, slug, stage, summ, d in DOCS:
+for row in DOCS:
+    t, sub, uid, slug, stage, summ, d = row[:7]
+    tags = row[7] if len(row) > 7 else []
     local = (docs_dir / f"{slug}.html").exists()
     items.append({
         "title": t, "subtitle": sub, "stage": stage, "summary": summ,
-        "updated": d, "slug": slug,
+        "updated": d, "slug": slug, "tags": tags,
         "url": href(slug) if local else url(uid, slug),
         "local": local,
     })
 
+# 실제로 쓰인 태그만 내보낸다 — 0편짜리 필터 버튼이 생기면 혼란스럽다
+used = {t for i in items for t in i["tags"]}
 data = {
     "note": "catalog.py 가 단일 출처 — 이 파일을 직접 편집하지 말 것.",
     "stages": [{k: s[k] for k in ("id", "no", "name", "tagline", "desc")} for s in STAGES],
+    "tags": [{k: t[k] for k in ("id", "group", "name", "desc")}
+             for t in TAGS if t["id"] in used],
     "items": items,
 }
 (pages / "data" / "artifacts.json").write_text(

@@ -102,8 +102,40 @@ grep -rn "다루지 않는다\|별도\|생략\|여기서는" site-pages/docs/*.h
 [A]에서 모은 소식 중 **6개월 뒤에도 유효한** 기반 기술이면 후보가 된다.
 단일 제품 릴리스는 아니다.
 
-> **vision 분야를 우선한다.** 사용자의 관심 영역이다.
-> 같은 조건이면 vision 쪽 주제를 먼저 고른다.
+### 태그로 균형을 본다 — 고르기 전에
+
+문서마다 태그가 붙어 있어 **어디가 비었는지 숫자로 보인다.**
+
+```bash
+python3 - <<'PY'
+import sys; sys.path.insert(0, "scripts")
+from catalog import DOCS, TAGS
+from collections import Counter
+c = Counter(t for d in DOCS for t in d[7])
+for g in ("domain", "topic"):
+    print(g)
+    for t in TAGS:
+        if t["group"] == g: print(f"   {t['name']:10} {c[t['id']]:2}편")
+PY
+```
+
+**고르는 순서**
+
+1. **0편이거나 관심사 대비 얇은 태그**를 먼저 채운다
+2. **vision 을 우선한다** — 사용자의 관심 영역이고, 현재 LLM 보다 적다
+3. 관심사 태그 넷을 특히 챙긴다 — `detection` `on-device` `enhance` `feature`
+4. 같은 태그가 **연달아 3편 이상** 나오지 않게 한다. 한쪽으로 쏠리면 흐름이 끊긴다
+
+### 태그를 붙인다
+
+새 문서를 등록할 때 태그도 함께 정한다.
+
+- **도메인 1개** — `llm` `vision` `common` 중 하나 (반드시 하나)
+- **주제 1~3개** — `detection` `on-device` `enhance` `feature` `generative`
+  `arch` `training` `alignment` `efficiency` `systems` `safety`
+
+태그가 틀리면 필터가 어긋나므로 `catalog.py` 의 `TAGS` 설명을 보고 정확히 고른다.
+검증이 미정의 태그와 도메인 개수를 잡아준다.
 
 ### 2. 중복 확인 — 반드시
 
@@ -143,8 +175,9 @@ python3 check.py ../../site-pages/docs/<slug>.html
 `scripts/catalog.py` 의 `DOCS` 에 등록한다.
 
 ```python
-("제목", "부제", "", "slug", "단계id", "한 줄 요약", "2026-08-11"),
-#                 ↑ 직접 쓴 문서는 uuid 를 빈 문자열로
+("제목", "부제", "", "slug", "단계id", "한 줄 요약", "2026-08-11",
+ ["vision", "enhance"]),
+#  ↑ uuid 는 빈 문자열      ↑ 도메인 1개 + 주제 1~3개
 ```
 
 **포맷은 기존 49편과 같아야 한다** — 번호 절 · `.eq` 수식 블록 ·

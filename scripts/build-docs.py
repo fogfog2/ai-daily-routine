@@ -110,7 +110,9 @@ def main() -> None:
         print(f"docs 폴더가 없습니다: {DOCS_DIR}")
         return
     done, missing = 0, []
-    for title, sub, uid, slug, stage, summ, date in DOCS:
+    # 행 뒤에 필드가 늘어도(태그 등) 깨지지 않게 앞쪽만 받는다
+    for row in DOCS:
+        title, sub, uid, slug, stage, summ, date = row[:7]
         p = DOCS_DIR / f"{slug}.html"
         if not p.exists():
             missing.append(slug)

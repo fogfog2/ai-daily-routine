@@ -30,6 +30,42 @@ PY
 
 ---
 
+## 태그로 균형 보기
+
+문서마다 태그가 붙어 있으므로 **어느 쪽이 비었는지 숫자로 보인다.**
+주제를 고를 때 이 분포를 먼저 확인한다.
+
+```bash
+python3 - <<'PY'
+import sys; sys.path.insert(0, "scripts")
+from catalog import DOCS, TAGS
+from collections import Counter
+c = Counter(t for d in DOCS for t in d[7])
+for g in ("domain", "topic"):
+    print(g)
+    for t in TAGS:
+        if t["group"] == g:
+            print(f"   {t['name']:10} {c[t['id']]:2}편")
+PY
+```
+
+**2026-08-11 기준 — 관심사 대비 비어 있는 곳**
+
+| 태그 | 편수 | 판단 |
+|---|---|---|
+| `enhance` 화질 개선 | **0편** | 관심 분야인데 통째로 없다. 최우선 |
+| `feature` 특징·매칭 | 3편 (vision 은 CLIP 1편) | 관심 분야 대비 얇다 |
+| `on-device` 온디바이스 | 6편 (vision 은 3편) | 검출 계열에만 붙어 있다 |
+| `vision` 도메인 | 10편 (LLM 15편) | 관심 비중과 반대다 |
+
+**고를 때의 원칙**
+
+1. 위 표에서 **0편이거나 관심사 대비 얇은 태그**를 먼저 채운다
+2. vision 이 LLM 편수를 따라잡을 때까지 vision 을 우선한다
+3. 같은 태그가 연달아 3편 이상 나오지 않게 한다 — 한쪽으로 쏠리면 흐름이 끊긴다
+
+---
+
 ## 후보 목록
 
 `언급` = 기존 49편 본문에 등장한 횟수. 많을수록 연결할 곳이 많다는 뜻이다.
@@ -44,6 +80,33 @@ PY
 | 9 | **SAM & 프롬프트 분할** | 09 특집 | 분할 자체가 49편에 없다. vision 쪽 큰 결손 | 대기 |
 | 9 | **ResNet & 잔차 연결** | 02 아키텍처 | 거의 모든 문서가 전제하는데 정작 설명이 없다 | 대기 |
 | 3 | **U-Net & 인코더-디코더** | 02 아키텍처 | 확산 모델이 쓰는 구조인데 별도 설명이 없다 | 대기 |
+
+### 관심사 — 화질 개선 `enhance` (현재 0편)
+
+| 주제 | 단계 | 태그 | 왜 필요한가 |
+|---|---|---|---|
+| **초해상 (Super-Resolution)** | 09 특집 | `vision` `enhance` | 화질 개선의 기본. SRCNN→ESRGAN→확산 기반까지의 계보 |
+| **denoise·복원** | 09 특집 | `vision` `enhance` | 확산 모델이 왜 복원에 잘 맞는지 — 노이즈 제거가 곧 학습 목표였다 |
+| **화질 평가 지표** | 08 평가 | `vision` `enhance` `safety` | PSNR·SSIM 이 사람 눈과 어긋나는 지점, LPIPS 가 나온 이유 |
+| **ISP 와 학습 기반 파이프라인** | 09 특집 | `vision` `enhance` `on-device` | RAW→RGB 를 신경망이 대체하는 흐름. 온디바이스와 직결 |
+
+### 관심사 — 특징·매칭 `feature` (현재 vision 은 1편)
+
+| 주제 | 단계 | 태그 | 왜 필요한가 |
+|---|---|---|---|
+| **메트릭 러닝** | 03 학습 | `vision` `feature` | **같은 객체는 가깝게, 다른 객체는 멀게** — 관심사의 핵심. contrastive·triplet·ArcFace |
+| **재식별 (Re-ID)** | 09 특집 | `vision` `feature` | 같은 물체를 다른 뷰·다른 카메라에서 같다고 판정하는 문제 그 자체 |
+| **지역 특징과 매칭** | 09 특집 | `vision` `feature` | SIFT 에서 SuperPoint·LightGlue 까지. 뷰가 달라도 대응점을 찾는 법 |
+| **벡터 검색 (ANN)** | 07 응용 | `common` `feature` `systems` | 뽑은 특징으로 실제 검색하려면 필요. HNSW·IVF-PQ |
+| **유사도 임계값 정하기** | 08 평가 | `vision` `feature` `safety` | 같은 품목/다른 품목의 스코어 분포가 겹칠 때 어디서 자를 것인가 |
+
+### 관심사 — 온디바이스 `on-device` (vision 은 검출에만)
+
+| 주제 | 단계 | 태그 | 왜 필요한가 |
+|---|---|---|---|
+| **경량 백본** | 02 아키텍처 | `vision` `on-device` `arch` | MobileNet·EfficientNet·ShuffleNet. depthwise separable 이 아끼는 것 |
+| **NAS 와 하드웨어 인지 설계** | 02 아키텍처 | `vision` `on-device` | FLOPs 가 아니라 실제 지연을 목표로 구조를 찾는 방식 |
+| **모바일 추론 런타임** | 07 응용 | `vision` `on-device` `systems` | TFLite·NCNN·CoreML. 연산자 지원 여부가 모델 선택을 정한다 |
 
 ### vision — 아직 언급은 적지만 결손
 
