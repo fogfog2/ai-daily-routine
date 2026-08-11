@@ -19,7 +19,7 @@ BODY = r"""
     <h2><span class="n">01</span>모델이 좋아도 안 돌아간다</h2>
     <p>
       <a href="efficient-backbone.html">경량 백본</a>으로 작게 만들고
-      <a href="quantization.html">양자화</a>로 더 줄였다. 벤치마크도 좋다.
+      <a href="ondevice-quantization.html">양자화</a>로 더 줄였다. 벤치마크도 좋다.
       그런데 실제 기기에 올리면 <strong>안 돌거나, 느리거나, 결과가 다르다</strong>.
     </p>
     <p>
