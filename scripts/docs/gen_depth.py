@@ -250,6 +250,7 @@ BODY = r"""
       <li><strong>사진 효과(보케)</strong> — 상대 깊이면 충분하고 경계가 중요하다</li>
       <li><strong>AR 오클루전</strong> — 실시간성이 우선. 정확도는 적당해도 된다</li>
       <li><strong>로봇 파지·측정</strong> — <em>절대 스케일이 필수</em>. 능동 센서를 쓴다</li>
+      <li><strong><a href="nerf-3d.html">새 시점 합성</a></strong> — 깊이를 넘어 공간 전체를 표현해야 한다</li>
       <li><strong>자율주행</strong> — 원거리 정밀도가 관건. 스테레오+LiDAR 조합</li>
     </ul>
     <div class="note">

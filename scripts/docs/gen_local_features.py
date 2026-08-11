@@ -34,6 +34,7 @@ BODY = r"""
       전역 벡터는 <em>"닮았다"</em>까지만 말한다.
       <strong>지역 특징</strong>은 이미지에서 <em>점들</em>을 뽑고 각 점에 서술자를 붙여,
       점 대 점 대응을 만든다. 뷰가 크게 달라도 <em>같은 물리적 지점</em>을 짚을 수 있다.
+      (시간 축의 조밀한 대응은 <a href="optical-flow.html">optical flow</a> 가 맡는다.)
     </p>
   </section>
 
