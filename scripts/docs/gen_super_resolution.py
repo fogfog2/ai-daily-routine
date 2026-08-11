@@ -46,7 +46,7 @@ BODY = r"""
     <h2><span class="n">02</span>MSE 를 쓰면 흐려진다 — 이유는 평균이다</h2>
     <p>
       복원 문제이니 픽셀 차이를 줄이는 것이 자연스러워 보인다.
-      실제로 초기 연구들은 MSE 를 썼고, <strong>PSNR</strong> 이라는 지표도 여기서 나온다.
+      실제로 초기 연구들은 MSE 를 썼고, <a href="image-quality-metrics.html"><strong>PSNR</strong></a> 이라는 지표도 여기서 나온다.
     </p>
     <div class="eq">
       <span class="cap">PSNR — MSE 를 로그 스케일로 바꾼 것일 뿐이다</span>
@@ -252,6 +252,7 @@ BODY = r"""
     </p>
     <p>
       <strong>Real-ESRGAN</strong> 계열은 열화를 <em>여러 단계로 무작위 조합</em>해 학습 데이터를 만든다 —
+      (<a href="denoising.html">노이즈 제거</a>에서 다루는 실제 노이즈 모델과 같은 문제의식이다.)
       흐림 → 축소 → 노이즈 → JPEG 을 순서와 강도를 바꿔가며 반복 적용한다.
       실제 열화 과정을 모사하는 것이 아니라, <em>충분히 넓게 덮어</em> 강건하게 만드는 접근이다.
     </p>

@@ -264,7 +264,7 @@ BODY = r"""
     <p>
       YOLOX가 남긴 것은 결국 방향이다 —
       <em>사람이 손으로 정하던 것을 하나씩 학습이나 계산으로 넘긴다.</em>
-      앵커를 없앴고, 할당을 계산으로 넘겼다. 남은 수작업은 <strong>NMS</strong>였고,
+      앵커를 없앴고, 할당을 계산으로 넘겼다. 남은 수작업은 <a href="nms.html"><strong>NMS</strong></a>였고,
       그것을 없애는 일은 DETR 계열과 이후 YOLO 세대의 몫이 된다.
     </p>
   </section>
