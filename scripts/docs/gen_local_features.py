@@ -27,7 +27,7 @@ BODY = r"""
     </p>
     <ul>
       <li><strong>파노라마 합성</strong> — 두 사진을 이어 붙이려면 겹치는 지점을 정확히 알아야 한다</li>
-      <li><strong>3D 복원·SLAM</strong> — 여러 뷰의 같은 점을 찾아야 카메라 위치를 푼다</li>
+      <li><strong><a href="depth-estimation.html">3D 복원</a>·SLAM</strong> — 여러 뷰의 같은 점을 찾아야 카메라 위치를 푼다</li>
       <li><strong>정밀 검증</strong> — 비슷한 두 제품 중 어느 부위가 다른지 짚어야 한다</li>
     </ul>
     <p>

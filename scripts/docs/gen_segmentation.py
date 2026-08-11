@@ -175,7 +175,7 @@ BODY = r"""
   <section>
     <h2><span class="n">05</span>라벨 비용과 프롬프트 분할</h2>
     <p>
-      분할의 실무적 최대 장벽은 모델이 아니라 <strong>라벨</strong>이다.
+      분할의 실무적 최대 장벽은 모델이 아니라 <a href="data-pipeline.html"><strong>라벨</strong></a>이다.
       상자 하나는 클릭 두 번이면 되지만, 마스크 하나는 경계를 따라 그려야 한다.
       이미지 한 장에 수십 분이 걸리는 경우도 흔하다.
     </p>

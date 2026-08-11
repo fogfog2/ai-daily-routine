@@ -204,11 +204,11 @@ EfficientNet-lite 는 약 4.2% 정확도가 떨어진다.
 
 | 주제 | 단계 | 태그 | 왜 | 상태 |
 |---|---|---|---|---|
-| **Depth 추정** | 09 특집 | `vision` `detection` | 66편에 16회 언급되는데 문서가 없다. 스테레오·단안·자기지도 계보 | 대기(우선) |
-| **ControlNet & 조건부 생성 제어** | 03 학습 | `vision` `generative` `enhance` | 생성 4편뿐. 확산 문서가 CFG 까지만 다룬다 | 대기(우선) |
+| ~~Depth 추정~~ | 09 특집 | `vision` `detection` | — | **완료 08-11** (4925a18) |
+| ~~ControlNet & 조건부 생성 제어~~ | 03 학습 | `vision` `generative` `enhance` | — | **완료 08-11** (4925a18) |
 | **Few-Shot / Zero-Shot 인식** | 07 응용 | `vision` `feature` | 10회 언급. 메트릭 러닝·CLIP 과 이을 곳이 많다 | 대기 |
 | **Vision-Language 모델** | 07 응용 | `vision` `feature` `systems` | CLIP 이후가 비어 있다. 오픈보캐블러리 검출·분할과 연결 | 대기 |
-| **데이터 파이프라인·라벨링** | 06 인프라 | `common` `systems` `training` | 06 이 3편뿐. 분할 문서가 '라벨 비용이 최대 장벽'이라 했는데 다룬 곳이 없다 | 대기 |
+| ~~데이터 파이프라인·라벨링~~ | 06 인프라 | `common` `systems` `training` | — | **완료 08-11** (4925a18) |
 | **실험 관리·재현성** | 06 인프라 | `common` `systems` | 같은 이유. 학습을 실제로 굴리는 이야기가 얇다 | 대기 |
 | **NAS 와 하드웨어 인지 설계** | 02 아키텍처 | `vision` `on-device` | 경량 백본이 언급만 하고 지나감 | 대기 |
 | **적대적 예제와 강건성** | 08 평가 | `common` `safety` | 5회 언급. 안전 쪽에서 vision 이 비어 있다 | 대기 |
