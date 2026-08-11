@@ -53,10 +53,10 @@ PY
 
 | 태그 | 편수 | 판단 |
 |---|---|---|
-| `enhance` 화질 개선 | **0편** | 관심 분야인데 통째로 없다. 최우선 |
+| `enhance` 화질 개선 | 1편 | 초해상 1편 추가됨. denoise·평가지표·ISP 남음 |
 | `feature` 특징·매칭 | 3편 (vision 은 CLIP 1편) | 관심 분야 대비 얇다 |
 | `on-device` 온디바이스 | 6편 (vision 은 3편) | 검출 계열에만 붙어 있다 |
-| `vision` 도메인 | 10편 (LLM 15편) | 관심 비중과 반대다 |
+| `vision` 도메인 | 11편 (LLM 15편) | 관심 비중과 반대다 |
 
 **고를 때의 원칙**
 
@@ -85,7 +85,7 @@ PY
 
 | 주제 | 단계 | 태그 | 왜 필요한가 |
 |---|---|---|---|
-| **초해상 (Super-Resolution)** | 09 특집 | `vision` `enhance` | 화질 개선의 기본. SRCNN→ESRGAN→확산 기반까지의 계보 |
+| ~~초해상 (Super-Resolution)~~ | 03 학습 | `vision` `enhance` | **완료 2026-08-11** (9b271d6) — 03 학습 단계에 배치 |
 | **denoise·복원** | 09 특집 | `vision` `enhance` | 확산 모델이 왜 복원에 잘 맞는지 — 노이즈 제거가 곧 학습 목표였다 |
 | **화질 평가 지표** | 08 평가 | `vision` `enhance` `safety` | PSNR·SSIM 이 사람 눈과 어긋나는 지점, LPIPS 가 나온 이유 |
 | **ISP 와 학습 기반 파이프라인** | 09 특집 | `vision` `enhance` `on-device` | RAW→RGB 를 신경망이 대체하는 흐름. 온디바이스와 직결 |
