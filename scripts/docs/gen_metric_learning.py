@@ -222,7 +222,7 @@ BODY = r"""
   <section>
     <h2><span class="n">05</span>임계값 — 실무에서 가장 어려운 부분</h2>
     <p>
-      모델이 유사도를 잘 내놓아도 <strong>어디서 자를 것인가</strong>가 남는다.
+      모델이 유사도를 잘 내놓아도 <a href="similarity-threshold.html"><strong>어디서 자를 것인가</strong></a>가 남는다.
       그리고 이것이 대개 가장 손이 많이 가는 부분이다.
     </p>
     <p>
@@ -257,7 +257,7 @@ BODY = r"""
       마지막으로 규모 문제를 짚어 둔다.
       카탈로그가 100만 개면 매번 전수 비교할 수 없다.
       임베딩을 뽑는 것과 <em>그 임베딩으로 빠르게 찾는 것</em>은 다른 문제이고,
-      후자는 근사 최근접 탐색(ANN)의 영역이다.
+      후자는 <a href="vector-search.html">근사 최근접 탐색(ANN)</a>의 영역이다.
       부분끼리의 대응이 필요하면 <a href="local-features.html">지역 특징</a>이 맡는다.
       <a href="rag.html">RAG</a>가 텍스트에서 같은 구조를 쓰는 것처럼,
       <strong>임베딩 + 벡터 검색</strong>은 도메인을 가리지 않는 조합이다.

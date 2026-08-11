@@ -88,7 +88,7 @@ PY
 | ~~초해상 (Super-Resolution)~~ | 03 학습 | `vision` `enhance` | **완료 2026-08-11** (9b271d6) — 03 학습 단계에 배치 |
 | ~~denoise·복원~~ **완료 08-11** | 09 특집 | `vision` `enhance` | 확산 모델이 왜 복원에 잘 맞는지 — 노이즈 제거가 곧 학습 목표였다 |
 | ~~화질 평가 지표~~ **완료 08-11** | 08 평가 | `vision` `enhance` `safety` | PSNR·SSIM 이 사람 눈과 어긋나는 지점, LPIPS 가 나온 이유 |
-| **ISP 와 학습 기반 파이프라인** | 09 특집 | `vision` `enhance` `on-device` | RAW→RGB 를 신경망이 대체하는 흐름. 온디바이스와 직결 |
+| ~~ISP 와 학습 기반 파이프라인~~ | 09 특집 | `vision` `enhance` `on-device` | **완료 2026-08-11** (ed54c4d) |
 
 ### 관심사 — 특징·매칭 `feature` (현재 vision 은 1편)
 
@@ -97,8 +97,8 @@ PY
 | ~~메트릭 러닝~~ **완료 08-11** | 03 학습 | `vision` `feature` | **같은 객체는 가깝게, 다른 객체는 멀게** — 관심사의 핵심. contrastive·triplet·ArcFace |
 | ~~재식별 (Re-ID)~~ **완료 08-11** | 09 특집 | `vision` `feature` | 같은 물체를 다른 뷰·다른 카메라에서 같다고 판정하는 문제 그 자체 |
 | ~~지역 특징과 매칭~~ **완료 08-11** | 09 특집 | `vision` `feature` | SIFT 에서 SuperPoint·LightGlue 까지. 뷰가 달라도 대응점을 찾는 법 |
-| **벡터 검색 (ANN)** | 07 응용 | `common` `feature` `systems` | 뽑은 특징으로 실제 검색하려면 필요. HNSW·IVF-PQ |
-| **유사도 임계값 정하기** | 08 평가 | `vision` `feature` `safety` | 같은 품목/다른 품목의 스코어 분포가 겹칠 때 어디서 자를 것인가 |
+| ~~벡터 검색 (ANN)~~ | 07 응용 | `common` `feature` `systems` | **완료 2026-08-11** (ed54c4d) |
+| ~~유사도 임계값 정하기~~ | 08 평가 | `vision` `feature` `safety` | **완료 2026-08-11** (ed54c4d) |
 
 ### 관심사 — 온디바이스 양자화 `on-device` (2026-08-11 점검 → **3편 전부 완료**)
 

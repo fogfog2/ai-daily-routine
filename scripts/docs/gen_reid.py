@@ -74,6 +74,7 @@ BODY = r"""
     <p>
       Rank-1 만 높고 mAP 가 낮으면 <em>운 좋게 한 장만 잘 맞히는</em> 모델이다.
       실무에서 후보를 추려 사람이 확인하는 구성이라면 mAP 가 더 중요하다.
+      최종 판정에는 <a href="similarity-threshold.html">임계값</a>이 따로 필요하다.
     </p>
   </section>
 
