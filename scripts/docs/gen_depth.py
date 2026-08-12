@@ -214,7 +214,8 @@ BODY = r"""
       서로 다른 데이터셋은 스케일과 단위가 제각각인데,
       <em>스케일·이동에 불변인 손실</em>을 쓰면 함께 학습할 수 있다.
       수백만 장을 섞어 학습한 모델이 <strong>처음 보는 장면에도 일반화</strong>하는 수준에 이르렀다 —
-      <a href="self-supervised-learning.html">DINOv2</a> 같은 시각 기반 모델을 백본으로 쓰는 것도 같은 흐름이다.
+      <a href="dino-self-distillation.html">DINOv2</a> 같은 시각 기반 모델을 백본으로 쓰는 것도 같은 흐름이다.
+      라벨 없이 배운 특징을 얼려 두고 깊이 머리만 얹는 구성이다.
     </p>
   </section>
 

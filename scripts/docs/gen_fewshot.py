@@ -241,8 +241,10 @@ BODY = r"""
     <p>
       실무 관점에서 정리하면 이렇다.
       <strong>먼저 좋은 사전학습 모델을 구하는 것</strong>이 알고리즘 선택보다 중요하다.
-      <a href="self-supervised-learning.html">DINOv2</a> 나 <a href="clip.html">CLIP</a> 같은
+      <a href="dino-self-distillation.html">DINOv2</a> 나 <a href="clip.html">CLIP</a> 같은
       범용 특징 위에서는 단순한 방법으로도 충분한 경우가 많다.
+      둘의 성격은 다르다 — 캡션으로 배운 쪽은 말로 지시할 수 있고,
+      <a href="dino-self-distillation.html">라벨 없이 배운 쪽</a>은 캡션이 없는 도메인에서 강하다.
     </p>
     <p>
       그리고 <em>정말 few-shot 이 필요한지</em>를 먼저 물어야 한다.

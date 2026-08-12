@@ -253,6 +253,15 @@ BODY = r"""
       비교만 하던 것이 설명하고 답하게 되면서 쓸 수 있는 곳이 크게 늘었지만,
       <em>세밀한 시각 판단은 여전히 전용 모델이 낫다</em>는 것이 현재 위치다.
     </p>
+    <p>
+      시각 인코더 쪽을 캡션 없이 학습한 <a href="dino-self-distillation.html">DINOv2 계열</a>로 두고
+      언어 쪽만 따로 붙이는 구성도 흔하다.
+      <em>특징을 잘 뽑는 것</em>과 <em>말로 지시받는 것</em>은 별개의 능력이라
+      어느 쪽을 어디서 가져올지가 설계 선택으로 남는다.
+      (이름이 비슷한 Grounding DINO 는 자기지도 DINO 가 아니라
+      <a href="detr-lineage.html">DETR 계열 검출기</a> 쪽 DINO 에서 온 것이다 —
+      <a href="dino-self-distillation.html">구분은 여기</a>에 정리해 두었다.)
+    </p>
   </section>
 """
 

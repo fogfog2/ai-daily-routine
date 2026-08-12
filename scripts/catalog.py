@@ -208,6 +208,10 @@ DOCS = [
     ("데이터 품질과 커리큘럼", "무엇을 먹이느냐가 정한다",
      "", "curriculum-data-quality", "train",
      "중복 제거와 필터링이 파라미터를 늘리는 것보다 싸게 먹히는 구간.", "2026-08-10", ["common", "training"]),
+    ("DINO 와 자기증류", "라벨 없이 배운 시각 특징",
+     "", "dino-self-distillation", "train",
+     "교사가 학생의 과거 평균인데도 붕괴하지 않는 이유. 센터링과 샤프닝의 균형에서 DINOv3까지.", "2026-08-12",
+     ["vision", "feature", "training"]),
 
     ("LoRA", "얼린 가중치 옆에 샛길을 내다",
      "dfdb6442-a674-4514-8fd7-9347669eca80", "lora", "align",
