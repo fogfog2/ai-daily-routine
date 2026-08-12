@@ -92,6 +92,51 @@ def main() -> None:
 
     total = sum(len(d["items"]) for d in days)
     print(f"  news.json 갱신: {len(days)}일 · {total}건")
+    warn_repeats(days)
+
+
+def _key_terms(title: str) -> set:
+    """제목에서 고유명사스러운 토큰만 남긴다 (조사·일반어 제거)."""
+    toks = re.findall(r"[A-Za-z][A-Za-z0-9.\-]{2,}|[가-힣]{2,}", title)
+    stop = {"발표", "공개", "출시", "시행", "강화", "선임", "확보", "개편",
+            "그리고", "위한", "관련", "이후", "대한", "최대", "규모"}
+    return {t.lower() for t in toks if t not in stop}
+
+
+def warn_repeats(days: list) -> None:
+    """전날과 겹치는 항목을 경고한다. 막지는 않는다 — 판단은 사람이 한다."""
+    hits = []
+    for cur, prev in zip(days, days[1:]):          # days 는 최신순
+        prev_urls = {i["url"] for i in prev["items"] if i["url"]}
+        for it in cur["items"]:
+            if it["url"] and it["url"] in prev_urls:
+                hits.append((cur["date"], it["title"], "출처 동일"))
+                continue
+            a = _key_terms(it["title"])
+            if not a:
+                continue
+            for p in prev["items"]:
+                b = _key_terms(p["title"])
+                if not b:
+                    continue
+                shared = a & b
+                overlap = len(shared) / min(len(a), len(b))
+                # 고유명사(라틴 문자 토큰)가 2개 이상 겹치면 비율이 낮아도 같은 사건일 공산이 크다.
+                # 'Jeff Dean 퇴사' 와 'Jeff Dean, Discovery Loop 창업' 이 25% 로 새어나간 적이 있다.
+                proper = {t for t in shared if re.match(r"^[a-z]", t)}
+                if overlap >= 0.5 or len(proper) >= 2:
+                    why = (f"고유명사 {'·'.join(sorted(proper))} 공유"
+                           if len(proper) >= 2 else f"{overlap:.0%} 겹침")
+                    hits.append((cur["date"], it["title"],
+                                 f"'{p['title'][:30]}' 와 {why}"))
+                    break
+
+    if not hits:
+        return
+    print(f"\n  ⚠ 전날과 겹치는 항목 {len(hits)}건 — 확인 필요")
+    for date, title, why in hits:
+        print(f"    {date}  {title[:38]}  ({why})")
+    print("  같은 사건이면 archive 에서 빼고 build-news.py 를 다시 돌린다.")
 
 
 if __name__ == "__main__":
