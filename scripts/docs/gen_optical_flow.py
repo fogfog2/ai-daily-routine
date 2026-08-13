@@ -222,7 +222,7 @@ BODY = r"""
     <ul>
       <li><strong>동영상 초해상·denoise</strong> — 여러 프레임을 정렬해 합치면 <a href="denoising.html">1/√N 효과</a>를 얻는다</li>
       <li><strong>프레임 보간</strong> — 중간 프레임을 만들어 부드럽게</li>
-      <li><strong>추적</strong> — 검출 결과를 프레임 간에 잇는다</li>
+      <li><strong><a href="object-tracking.html">추적</a></strong> — 검출 결과를 프레임 간에 잇는다</li>
       <li><strong>손떨림 보정</strong> — 전역 움직임을 추정해 상쇄</li>
       <li><strong>행동 인식</strong> — 움직임 패턴 자체가 단서</li>
     </ul>
@@ -248,7 +248,7 @@ BODY = r"""
       <b>온디바이스에서는 여전히 비싸다.</b> 조밀한 flow 는
       <a href="segmentation.html">분할</a>처럼 <em>입력 크기의 출력</em>을 내는 데다,
       RAFT 계열은 상관 볼륨이 크고 반복까지 한다.
-      그래서 모바일에서는 <em>희소 추적</em>으로 대체하거나,
+      그래서 모바일에서는 <em>희소 <a href="object-tracking.html">추적</a></em>으로 대체하거나,
       반복 횟수를 줄이거나, 해상도를 낮춰 쓰는 절충이 흔하다 —
       <a href="mobile-runtime.html">예산 안에서 무엇을 포기할지</a>의 문제로 돌아온다.
     </div>
