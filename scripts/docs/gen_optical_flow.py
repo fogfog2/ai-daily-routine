@@ -222,6 +222,7 @@ BODY = r"""
     <ul>
       <li><strong>동영상 초해상·denoise</strong> — 여러 프레임을 정렬해 합치면 <a href="denoising.html">1/√N 효과</a>를 얻는다</li>
       <li><strong>프레임 보간</strong> — 중간 프레임을 만들어 부드럽게</li>
+      <li><strong><a href="hdr-tone-mapping.html">HDR 합성</a></strong> — 노출이 다른 장을 맞춘다. 밝기 항상성이 깨져 특히 어렵다</li>
       <li><strong>추적</strong> — 검출 결과를 프레임 간에 잇는다</li>
       <li><strong>손떨림 보정</strong> — 전역 움직임을 추정해 상쇄</li>
       <li><strong>행동 인식</strong> — 움직임 패턴 자체가 단서</li>

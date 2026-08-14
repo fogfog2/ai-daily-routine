@@ -3,7 +3,7 @@ __pycache__/
 
 # 공개 사이트는 별도 저장소(fogfog2/ai-concepts)다.
 # ship-docs.sh 가 필요할 때 clone 하므로 여기 담지 않는다.
-site-pages/
+site-pages
 site-pages.bak.*
 
 # 로컬 빌드 산출물
