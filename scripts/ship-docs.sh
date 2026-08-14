@@ -28,6 +28,8 @@ if [[ ! -d "$PAGES/.git" ]]; then
         mv "$PAGES" "$PAGES.bak.$$"   # 지우지 않고 옆으로 치운다
         echo "  기존 폴더를 $PAGES.bak.$$ 로 옮겼습니다"
     fi
+    # SSH 로 적어 두면 집 PC 는 키로, 클라우드는 프록시의 SSH→HTTPS 재작성으로
+    # 양쪽 다 받아진다 (2026-08-14 클라우드에서 확인).
     git clone -q git@github.com:fogfog2/ai-concepts.git "$PAGES" \
         || fail "공개 사이트 저장소를 받지 못했습니다 (SSH 키 확인)"
 fi
