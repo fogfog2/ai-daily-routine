@@ -202,7 +202,7 @@ BODY = r"""
       배칭 위에 얹는 기법들이 여럿 있다. 각각 다른 자원을 절약한다.
     </p>
     <ul>
-      <li><strong>접두사 캐싱.</strong> 같은 시스템 프롬프트를 쓰는 요청들이 앞부분 KV 캐시를 공유한다. 긴 공통 프롬프트를 쓰는 서비스에서 프리필 비용이 크게 준다.</li>
+      <li><strong>접두사 캐싱.</strong> 같은 시스템 프롬프트를 쓰는 요청들이 앞부분 KV 캐시를 공유한다. 긴 공통 프롬프트를 쓰는 서비스에서 프리필 비용이 크게 준다. 문맥이 <a href="long-context.html">10만 토큰대로 길어지면</a> 프리필이 연산의 7할을 차지하므로, 재사용 여부가 비용을 통째로 가른다.</li>
       <li><strong><a href="speculative-decoding.html">추측 디코딩</a>.</strong> 작은 모델이 초안을 여러 토큰 쓰고 큰 모델이 한 번에 검증한다. 디코드가 메모리 병목이라는 성질을 이용해 <em>남는 연산 능력으로 지연을 산다</em>.</li>
       <li><strong><a href="quantization.html">양자화</a>.</strong> 가중치를 4비트로 줄이면 읽어야 할 바이트가 줄어 디코드가 직접 빨라진다. KV 캐시도 양자화 대상이다.</li>
       <li><strong>연산자 융합·최적 커널.</strong> <a href="flash-attention.html">FlashAttention</a> 계열을 포함해, 중간 결과를 HBM에 쓰지 않는 커널들.</li>

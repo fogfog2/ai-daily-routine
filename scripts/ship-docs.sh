@@ -93,7 +93,25 @@ git add -A
 git commit -q -m "$MSG
 
 Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
-git push -q origin main
+
+# HEAD:main 으로 민다. 'origin main' 이 아니라 'HEAD:main' 인 것이 중요하다.
+#
+# 클라우드 세션은 main 이 아니라 작업 브랜치에 체크아웃된 채로 돈다.
+# 그 상태에서 `git push origin main` 은 방금 만든 커밋이 아니라
+# **로컬 main 참조**(클론 시점에 멈춰 있는)를 밀어서 non-fast-forward 로 거부된다.
+# 2026-08-12·08-13 회차의 문서가 브랜치에 남고 사이트에 반영되지 않은 원인이다.
+[[ -n "$(git log origin/main..HEAD --oneline 2>/dev/null || echo x)" ]] \
+    || fail "HEAD 가 origin/main 보다 앞서 있지 않습니다 — 밀 것이 없습니다"
+git merge-base --is-ancestor origin/main HEAD \
+    || fail "HEAD 가 origin/main 을 fast-forward 하지 않습니다 — 수동 확인 필요"
+git push -q origin HEAD:main
+
+# 세션 브랜치도 같이 밀어 둔다. 사이트는 main 이 서지만,
+# 브랜치가 남아 있어야 어느 세션이 무엇을 올렸는지 추적된다.
+BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+if [[ "$BRANCH" != "HEAD" && "$BRANCH" != "main" ]]; then
+    git push -q -u origin "$BRANCH" || echo "  (세션 브랜치 푸시 실패 — main 은 반영됨)"
+fi
 echo "  $(git log --oneline -1)"
 echo
 echo "  https://fogfog2.github.io/ai-concepts/  (반영까지 1~2분)"
