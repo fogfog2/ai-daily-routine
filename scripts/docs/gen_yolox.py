@@ -80,7 +80,9 @@ BODY = r"""
     </p>
     <p>
       SimOTA는 이것을 <strong>할당 문제</strong>로 본다. 예측과 정답 사이의 비용을 정의하고,
-      비용이 낮은 쌍을 고른다. 비용은 분류 손실과 회귀 손실의 합이다.
+      비용이 낮은 쌍을 고른다. 비용은 분류 손실과
+      <a href="iou-losses.html">회귀 손실</a>의 합이다 —
+      여기서 회귀 쪽은 좌표 오차가 아니라 IoU 계열 손실이다.
     </p>
     <div class="eq">
       <span class="cap">SimOTA — 비용과 동적 k</span>

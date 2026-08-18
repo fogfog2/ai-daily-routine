@@ -104,6 +104,9 @@ BODY = r"""
     <p>
       지표도 갈린다. 시맨틱은 클래스별 <strong>mIoU</strong>(교집합/합집합의 평균)를 쓰고,
       인스턴스는 검출처럼 마스크 IoU 기반 <strong>AP</strong>를 쓴다.
+      상자 쪽에서 IoU 를 지표가 아니라
+      <a href="iou-losses.html">손실로 쓰는 계보</a>가 그랬듯, 마스크에서도 mIoU 를 직접 최적화하려는 시도가 있다
+      (Dice·Lovász 계열).
       판옵틱은 둘을 합친 <strong>PQ</strong>를 쓰는데, 분할 품질과 인식 품질의 곱으로 정의된다.
     </p>
   </section>
