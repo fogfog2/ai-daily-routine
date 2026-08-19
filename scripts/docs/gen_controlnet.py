@@ -76,7 +76,9 @@ BODY = r"""
     <p>
       <a href="lora.html">LoRA</a> 가 <code>B</code>를 0으로 초기화해
       <em>시작 순간 원본과 같게</em> 만든 것과 정확히 같은 발상이다.
-      <strong>망가진 상태에서 출발하지 않는다</strong>는 것이 두 기법의 공통 원칙이다.
+      <strong>망가진 상태에서 출발하지 않는다</strong>는 것이 두 기법의 공통 원칙이고,
+      <a href="residual-connections.html">잔차 블록</a>의 끝을 0 으로 두어
+      초기 망을 정확히 항등으로 만드는 관행(Fixup·ReZero)과도 뿌리가 같다.
     </p>
     <div class="note">
       <b>0 인데 학습이 되나.</b> 흔한 의문인데, 된다.

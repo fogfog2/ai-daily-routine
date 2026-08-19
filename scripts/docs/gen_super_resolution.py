@@ -233,7 +233,8 @@ BODY = r"""
     </div>
     <p>
       나머지 구조는 익숙한 것들의 조합이다 —
-      <strong>잔차 블록</strong>을 깊게 쌓고(EDSR 은 배치 정규화를 <em>제거해</em> 성능을 올렸다),
+      <a href="residual-connections.html">잔차 블록</a>을 깊게 쌓고(EDSR 은 배치 정규화를 <em>제거해</em> 성능을 올렸다 —
+      크기 제어를 정규화 대신 가지 스케일링으로 옮긴 셈이다),
       채널·공간 어텐션을 더하고(RCAN), 최근에는
       <a href="vision-transformer.html">트랜스포머</a> 블록을 쓴다(SwinIR).
     </p>

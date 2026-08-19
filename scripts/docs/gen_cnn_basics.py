@@ -224,6 +224,9 @@ BODY = r"""
       <b>이 아이디어는 비전을 넘어갔다.</b> <a href="transformer.html">트랜스포머</a>의 모든 블록에
       잔차 연결이 들어 있고, U-Net 의 스킵 연결도 같은 계열이다.
       "깊게 쌓으려면 지름길을 둔다"는 것이 <em>구조 설계의 기본 문법</em>이 됐다.
+      다만 <a href="residual-connections.html">잔차 연결</a> 편에서 보듯
+      <strong>덧셈만으로는 부족하다</strong> — 정규화나 0 초기화로 크기를 잡아 주지 않으면
+      이번에는 기울기가 반대쪽으로 터진다.
     </div>
   </section>
 

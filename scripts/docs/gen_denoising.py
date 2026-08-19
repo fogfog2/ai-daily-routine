@@ -98,7 +98,7 @@ BODY = r"""
     </p>
     <div class="note">
       <b>같은 발상을 이미 본 적이 있다.</b>
-      <a href="cnn-basics.html">잔차 연결</a>이 "항등을 배우지 말고 변화량만 배우게" 한 것,
+      <a href="residual-connections.html">잔차 연결</a>이 "항등을 배우지 말고 변화량만 배우게" 한 것,
       그리고 <a href="diffusion-models.html">확산 모델</a>이
       <em>이미지가 아니라 섞인 노이즈를 예측하게</em> 한 것이 모두 같은 계열이다.
       확산 모델의 학습 목표가 사실상 <strong>denoising</strong> 그 자체라는 점은

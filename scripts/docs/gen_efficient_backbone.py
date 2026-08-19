@@ -66,7 +66,7 @@ BODY = r"""
       기존 잔차 블록과 <em>반대 방향</em>이라 그렇다.
     </p>
     <p>
-      ResNet 의 병목 블록은 <em>넓게 → 좁게 → 넓게</em> 간다.
+      <a href="residual-connections.html">ResNet 의 병목 블록</a>은 <em>넓게 → 좁게 → 넓게</em> 간다.
       MobileNetV2 는 <em>좁게 → 넓게 → 좁게</em> 간다.
       1×1 로 채널을 늘리고, depthwise 로 공간을 처리하고, 1×1 로 다시 줄인다.
     </p>
