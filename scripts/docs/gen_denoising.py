@@ -219,7 +219,7 @@ BODY = r"""
     <div class="note">
       <b>지어내는 것과 지우는 것의 경계.</b> 최근 모델은 노이즈를 지우면서
       <em>있을 법한 세부를 채워 넣기도</em> 한다. 감상용으로는 좋지만,
-      <a href="super-resolution.html">초해상</a>에서 지적한 위험이 그대로 적용된다 —
+      <a href="super-resolution.html">초해상</a>·<a href="deblurring.html">디블러링</a>에서 지적한 위험이 그대로 적용된다 —
       <strong>증거로 쓰이는 이미지</strong>에서는 지어낸 세부가 문제가 된다.
       "노이즈 제거"라는 이름이 순수한 복원처럼 들리지만,
       강한 모델일수록 생성에 가까워진다는 점을 알고 써야 한다.
