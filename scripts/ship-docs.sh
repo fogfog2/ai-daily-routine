@@ -21,15 +21,33 @@ fail() { echo "  ✗ $1" >&2; exit 1; }
 # 공개 사이트는 별도 저장소(fogfog2/ai-concepts)다.
 # 클라우드에서 루틴 저장소만 체크아웃된 경우 여기 없으므로 받아온다.
 if [[ ! -d "$PAGES/.git" ]]; then
-    echo "── 0. 공개 사이트 저장소 준비 (없어서 clone)"
+    echo "── 0. 공개 사이트 저장소 준비"
     # 안전장치: 지울 대상이 정말 ROOT 아래의 site-pages 인지 확인한 뒤에만 건드린다.
     [[ "$PAGES" == "$ROOT/site-pages" ]] || fail "예상치 못한 경로: $PAGES"
-    if [[ -e "$PAGES" ]]; then
-        mv "$PAGES" "$PAGES.bak.$$"   # 지우지 않고 옆으로 치운다
-        echo "  기존 폴더를 $PAGES.bak.$$ 로 옮겼습니다"
+
+    # 클라우드 세션은 두 저장소를 **형제 디렉터리로 나란히** 클론해 준다.
+    # (예: /home/user/ai-daily-routine 과 /home/user/ai-concepts)
+    # 이미 받아 둔 것이 있으면 다시 받지 않고 심볼릭 링크로 잇는다 —
+    # 네트워크를 타지 않으므로 이그레스가 막힌 환경에서도 확실하다.
+    SIBLING="$(cd "$ROOT/.." && pwd)/ai-concepts"
+    if [[ -d "$SIBLING/.git" ]]; then
+        if [[ -e "$PAGES" && ! -L "$PAGES" ]]; then
+            mv "$PAGES" "$PAGES.bak.$$"   # 지우지 않고 옆으로 치운다
+            echo "  기존 폴더를 $PAGES.bak.$$ 로 옮겼습니다"
+        fi
+        ln -sfn "$SIBLING" "$PAGES"
+        echo "  형제 클론을 연결했습니다: $SIBLING"
+    else
+        if [[ -e "$PAGES" ]]; then
+            mv "$PAGES" "$PAGES.bak.$$"
+            echo "  기존 폴더를 $PAGES.bak.$$ 로 옮겼습니다"
+        fi
+        # HTTPS 를 먼저 쓴다. 클라우드 세션에는 SSH 키가 없고
+        # 자격증명이 HTTPS 로 주입되므로, SSH 부터 시도하면 여기서 배포가 통째로 멈춘다.
+        git clone -q https://github.com/fogfog2/ai-concepts.git "$PAGES" \
+            || git clone -q git@github.com:fogfog2/ai-concepts.git "$PAGES" \
+            || fail "공개 사이트 저장소를 받지 못했습니다 (HTTPS·SSH 모두 실패)"
     fi
-    git clone -q git@github.com:fogfog2/ai-concepts.git "$PAGES" \
-        || fail "공개 사이트 저장소를 받지 못했습니다 (SSH 키 확인)"
 fi
 
 echo "── 1. 카탈로그 검증"
@@ -173,6 +191,11 @@ Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
     # 사이트와 같은 이유로 HEAD:main 을 쓴다 (작업 브랜치에서 도는 세션 대비)
     if git merge-base --is-ancestor origin/main HEAD 2>/dev/null; then
         git push -q origin HEAD:main
+        # 7단계와 같이 세션 브랜치도 남겨 둔다 — 어느 세션이 무엇을 올렸는지 추적된다.
+        BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+        if [[ "$BRANCH" != "HEAD" && "$BRANCH" != "main" ]]; then
+            git push -q -u origin "$BRANCH" || echo "  (세션 브랜치 푸시 실패 — main 은 반영됨)"
+        fi
         echo "  $(git log --oneline -1)"
     else
         fail "루틴 저장소 HEAD 가 origin/main 을 fast-forward 하지 않습니다 (사이트는 이미 반영됨)"
