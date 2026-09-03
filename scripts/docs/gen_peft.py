@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-import sys, pathlib
+import pathlib
+import sys
+
 sys.path.insert(0, str(pathlib.Path(__file__).parent))
 from build import write
 
@@ -16,252 +18,275 @@ DARK = dict(paper="#101210", panel="#181b16", ink="#e7eae2", **{
 
 BODY = r"""
   <section>
-    <h2><span class="n">01</span>어디에 무엇을 끼워 넣을 것인가</h2>
+    <h2><span class="n">01</span>PEFT의 핵심은 “얼마나 적게 학습하느냐”보다 “어디를 바꾸느냐”다</h2>
     <p>
-      전체 파인튜닝이 비싼 이유는 <a href="lora.html">LoRA 문서</a>에서 다뤘다 —
-      7B 모델에 112GB가 든다. 해결 방향은 하나다.
-      <strong>대부분을 얼리고 작은 부분만 학습한다.</strong>
-    </p>
-    <p>
-      그런데 "작은 부분"을 어디에 둘지는 여러 선택지가 있고,
-      그 선택이 <em>추론 지연·메모리·성능</em>을 각각 다르게 바꾼다.
-      PEFT 계열을 가르는 축은 결국 <strong>삽입 위치와 결합 방식</strong>이다.
+      전체 파인튜닝은 모든 가중치를 갱신하지만, PEFT(parameter-efficient fine-tuning)는
+      <strong>사전학습 백본을 대부분 얼리고 작은 보정 경로만 학습</strong>한다.
+      <a href="lora.html">LoRA</a>가 가장 널리 알려졌지만, Adapter·Prefix·IA³처럼
+      서로 다른 위치에 작은 자유도를 주는 방법도 같은 문제를 푼다.
     </p>
     <div class="scroller">
       <table class="data">
-        <thead>
-          <tr><th>방식</th><th>어디에</th><th>어떻게 결합</th><th>추론 지연</th></tr>
-        </thead>
+        <thead><tr><th>방식</th><th>보정 위치</th><th>추론 경로</th><th>병합 가능성</th><th>CNN 적합성</th></tr></thead>
         <tbody>
-          <tr><td>Adapter</td><td>층 사이</td><td class="hi">직렬 (경로가 길어짐)</td><td>증가</td></tr>
-          <tr><td>Prefix / Prompt</td><td>입력 앞</td><td>가상 토큰 추가</td><td>증가 (문맥 소모)</td></tr>
-          <tr><td>LoRA</td><td>선형 층 옆</td><td class="hi">병렬 (더하기)</td><td class="hi">없음 (병합 시)</td></tr>
-          <tr><td>IA³</td><td>활성값에</td><td class="hi">곱하기 (스케일)</td><td class="hi">거의 없음</td></tr>
-          <tr><td>BitFit</td><td>bias 항</td><td>기존 파라미터만</td><td class="hi">없음</td></tr>
+          <tr><td>Serial Adapter</td><td>블록 뒤</td><td>새 연산 추가</td><td>대체로 어려움</td><td class="hi">가능</td></tr>
+          <tr><td>Residual / Conv Adapter</td><td>특징맵 옆</td><td>병렬 분기</td><td>구조에 따라 다름</td><td class="hi">높음</td></tr>
+          <tr><td>LoRA</td><td>가중치 업데이트</td><td>병렬 저랭크</td><td class="hi">가능</td><td class="hi">Conv2d에도 가능</td></tr>
+          <tr><td>IA³ / Channel scale</td><td>활성 채널</td><td>곱셈</td><td>일부 흡수 가능</td><td class="hi">높음</td></tr>
+          <tr><td>BN affine only</td><td>γ·β / 통계</td><td>기존 경로</td><td class="hi">추가 연산 없음</td><td class="hi">매우 높음</td></tr>
         </tbody>
       </table>
     </div>
+    <p>
+      Transformer에서는 토큰 차원 <code>d</code>가 중심이지만 CNN에서는 특징이
+      <code>B × C × H × W</code>다. 따라서 CNN adapter의 설계 포인트는
+      <strong>채널을 얼마나 줄일지</strong>뿐 아니라 <strong>공간적 locality를 보존할지</strong>,
+      그리고 <strong>새 분기가 실제 런타임에서 fusion 가능한지</strong>까지 포함한다.
+    </p>
   </section>
 
   <section>
-    <h2><span class="n">02</span>Adapter — 원조, 그리고 직렬의 대가</h2>
+    <h2><span class="n">02</span>Transformer 쪽 Adapter·Prefix·LoRA·IA³</h2>
     <p>
-      PEFT의 출발점은 2019년 Houlsby 등의 <strong>Adapter</strong>다.
-      트랜스포머 블록 안에 작은 병목 모듈을 <em>끼워 넣는다</em>.
+      Houlsby Adapter는 블록 내부에 작은 bottleneck MLP를 직렬로 삽입한다.
+      차원을 <code>d → r → d</code>로 줄였다가 복원하고 잔차로 더한다.
+      작지만 순전파 경로가 길어져 원본 가중치만으로 되돌리기 어렵다는 것이 배포상의 약점이다.
     </p>
     <div class="eq">
-      <span class="cap">Adapter — 내렸다가 올리는 병목 구조</span>
-      <div class="line">h ← h + W<sub>up</sub> · f( W<sub>down</sub> · h )</div>
-      <div class="line">W<sub>down</sub> ∈ ℝ<sup>d×r</sup>,&nbsp; W<sub>up</sub> ∈ ℝ<sup>r×d</sup>,&nbsp; r ≪ d</div>
-      <div class="line">// W_up 을 0 에 가깝게 초기화 → 처음엔 항등 함수</div>
+      <span class="cap">Bottleneck adapter</span>
+      <div class="line">h' = h + W<sub>up</sub> σ(W<sub>down</sub> h)</div>
+      <div class="line">r ≪ d</div>
     </div>
     <p>
-      아이디어는 LoRA와 닮았다. 차원을 줄였다 늘리고,
-      <a href="residual-connections.html">잔차</a>로 더하고,
-      초기에는 아무 영향이 없게 시작한다 — 블록 끝을 0 으로 두는 그 관행 그대로다. 성능도 전체 파인튜닝에 근접했다.
-    </p>
-    <p>
-      결정적 차이는 <strong>직렬</strong>이라는 점이다.
-      기존 계산이 끝난 뒤 어댑터를 통과해야 다음으로 간다.
-      순전파 경로에 층이 추가되므로 <em>원본 가중치에 합쳐 없앨 수가 없다</em>.
-      배치 크기가 작은 온라인 추론에서 이 지연이 무시하기 어려운 수준이 된다는 보고가 있었다.
-    </p>
-    <p>
-      LoRA 논문이 자신의 기여를 설명할 때 이 지점을 정면으로 겨냥한다 —
-      <strong>병렬로 붙이면 더해서 없앨 수 있다.</strong>
-      같은 저랭크 아이디어인데 결합 방식 하나가 배포 특성을 갈랐다.
+      Prefix/Prompt tuning은 가중치 대신 입력 또는 각 층의 K·V에 학습 가능한 벡터를 붙인다.
+      IA³는 활성값에 채널별 스케일을 곱한다. 반면 LoRA는
+      <code>ΔW = BA</code>를 병렬로 학습한 뒤 <code>W ← W + ΔW</code>로 합칠 수 있어,
+      같은 PEFT라도 <strong>배포 시 추가 연산을 없앨 수 있다는 점</strong>이 강점이다.
     </p>
   </section>
 
   <section>
-    <h2><span class="n">03</span>Prefix·Prompt — 가중치 대신 입력을 바꾼다</h2>
+    <h2><span class="n">03</span>CNN Residual Adapter — 1×1 Conv로 도메인별 샛길을 만든다</h2>
     <p>
-      전혀 다른 접근도 있다. 모델은 전혀 건드리지 않고
-      <strong>입력 앞에 학습되는 벡터를 붙이는</strong> 것이다.
-    </p>
-    <p>
-      <strong>Prompt Tuning</strong>은 임베딩 층에만 가상 토큰 <code>k</code>개를 붙인다.
-      사람이 프롬프트를 손으로 쓰는 대신, <em>연속 공간에서 최적의 프롬프트를 경사하강으로 찾는</em> 셈이다.
-      실제 단어에 대응할 필요가 없으므로 표현력이 훨씬 넓다.
-    </p>
-    <p>
-      <strong>Prefix Tuning</strong>은 한 걸음 더 간다.
-      임베딩만이 아니라 <em>모든 층의 어텐션 K·V에</em> 학습되는 접두사를 붙인다.
-      매 층에서 개입하므로 더 강력하지만 파라미터도 더 든다.
-    </p>
-    <div class="note">
-      <b>규모에 따라 평가가 갈린다.</b> Prompt Tuning은 모델이 작을 때는
-      전체 파인튜닝에 한참 못 미치다가, <strong>10B를 넘어서면 격차가 거의 사라진다</strong>.
-      큰 모델일수록 "무엇을 하라"는 신호만 잘 주면 되고,
-      가중치를 고칠 필요가 줄어든다는 해석이다.
-    </div>
-    <p>
-      실무적 약점은 분명하다. <strong>문맥 길이를 먹는다.</strong>
-      접두사가 20~100 토큰을 차지하면 그만큼 실제 입력이 줄고,
-      어텐션 비용도 늘어난다. 학습 안정성도 LoRA보다 까다롭다는 평이 많다.
-    </p>
-  </section>
-
-  <section>
-    <h2><span class="n">04</span>IA³ — 더하지 않고 곱한다</h2>
-    <p>
-      <strong>IA³</strong>는 접근이 다르다. 새 행렬을 더하는 대신
-      기존 활성값에 <strong>학습되는 벡터를 곱한다</strong>.
-      키·값·FFN 중간 활성에 각각 스케일 벡터를 하나씩 둔다.
+      CNN에서 adapter를 체계적으로 쓴 초기 흐름은 Rebuffi 등의
+      <strong>residual adapter</strong>다. 하나의 공유 CNN 백본은 그대로 두고,
+      각 도메인마다 작은 <code>1×1 Conv</code> 계열 보정 모듈을 저장한다.
+      2017년 NeurIPS와 2018년 CVPR 연구는 series·parallel adapter를 비교했고,
+      <strong>얕은 층과 깊은 층 모두에 작은 적응이 필요할 수 있다</strong>고 보고했다.
     </p>
     <div class="eq">
-      <span class="cap">IA³ — 벡터 세 개면 끝난다</span>
-      <div class="line">어텐션:&nbsp; softmax( Q (<strong>l<sub>k</sub></strong> ⊙ K)ᵀ / √d ) (<strong>l<sub>v</sub></strong> ⊙ V)</div>
-      <div class="line">FFN:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; W<sub>2</sub> ( <strong>l<sub>ff</sub></strong> ⊙ f(W<sub>1</sub>x) )</div>
-      <div class="line">// 학습 파라미터는 벡터 3개 — 행렬이 아니다</div>
-      <div class="line">// 1 로 초기화하면 시작 시점에 항등</div>
+      <span class="cap">CNN parallel residual adapter — conceptual form</span>
+      <div class="line">y = F(x; W<sub>0</sub>) + A(x; θ)</div>
+      <div class="line">A(x; θ) = Conv<sub>1×1</sub>(x)   또는   Conv<sub>up</sub>(σ(Conv<sub>down</sub>(x)))</div>
+      <div class="line">W<sub>0</sub>: frozen backbone, θ: task/domain-specific parameters</div>
     </div>
     <p>
-      파라미터 수가 LoRA보다도 한 자릿수 적다.
-      "무엇을 강조하고 무엇을 죽일지"만 조절하는 방식인데,
-      few-shot 상황에서 놀랄 만큼 잘 작동한다는 결과가 보고됐다.
-      곱셈이라 <strong>원본 가중치에 흡수시킬 수도 있어</strong> 추론 지연도 거의 없다.
-    </p>
-    <p>
-      가장 극단적으로 단순한 것은 <strong>BitFit</strong>이다.
-      새 파라미터를 아예 만들지 않고 <em>기존의 bias 항만</em> 학습한다.
-      전체의 약 0.1% 미만이다. 큰 과제에서는 밀리지만,
-      "이 정도로도 상당 부분 된다"는 사실 자체가 시사적이다.
+      <code>1×1 Conv</code>는 공간 크기 <code>H×W</code>를 건드리지 않고 채널만 섞는다.
+      그래서 사전학습된 공간 필터는 보존하면서 도메인별 채널 조합만 바꾸기 좋다.
+      여러 카메라·제품군·조명 도메인에 같은 백본을 쓰고
+      <strong>adapter만 갈아끼우는 구조</strong>가 특히 잘 맞는다.
     </p>
 
     <figure>
       <div class="plate">
-        <svg viewBox="0 0 700 224" role="img" aria-label="PEFT 방식별 삽입 위치 비교 도식. Adapter는 층 사이에 직렬로 들어가 경로가 길어지고, Prefix는 입력 앞에 가상 토큰을 붙여 문맥을 소모하며, LoRA는 선형 층 옆에 병렬로 붙어 병합 가능하고, IA³는 활성값에 스케일 벡터를 곱한다.">
+        <svg viewBox="0 0 720 260" role="img" aria-label="CNN에서 frozen convolution backbone 옆에 residual adapter를 병렬로 두는 구조와 Conv2d LoRA를 가중치에 병합하는 구조를 비교한다.">
+          <defs>
+            <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--muted)"/>
+            </marker>
+            <marker id="arr2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--accent-line)"/>
+            </marker>
+          </defs>
           <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
-            <defs>
-              <marker id="pf-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--muted)"/>
-              </marker>
-              <marker id="pf-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--accent-line)"/>
-              </marker>
-            </defs>
+            <text x="26" y="24" font-size="11" fill="var(--accent)">Residual / Conv Adapter</text>
+            <rect x="26" y="46" width="120" height="44" rx="3" fill="var(--muted-fill)" stroke="var(--rule-strong)"/>
+            <text x="86" y="72" text-anchor="middle" font-size="10" fill="var(--ink-soft)">Frozen Conv block</text>
+            <path d="M150 68 L206 68" stroke="var(--muted)" stroke-width="1.4" marker-end="url(#arr)"/>
+            <circle cx="226" cy="68" r="14" fill="none" stroke="var(--accent-line)" stroke-width="1.5"/>
+            <text x="226" y="73" text-anchor="middle" font-size="14" fill="var(--accent)">+</text>
+            <path d="M86 92 L86 126 L202 126 L214 83" fill="none" stroke="var(--accent-line)" stroke-width="1.5" marker-end="url(#arr2)"/>
+            <rect x="98" y="108" width="92" height="36" rx="3" fill="var(--accent-fill)" stroke="var(--accent-line)"/>
+            <text x="144" y="131" text-anchor="middle" font-size="9" fill="var(--accent)">1×1 / DW Adapter</text>
+            <text x="26" y="174" font-size="9.5" fill="var(--ink-faint)">장점: task별 작은 모듈 교체</text>
+            <text x="26" y="191" font-size="9.5" fill="var(--warn)">주의: 분기가 남으면 latency 증가</text>
 
-            <text x="24" y="18" font-size="9.5" letter-spacing="1.2" fill="var(--warn)">Adapter — 직렬</text>
-            <rect x="24" y="30" width="46" height="24" fill="var(--muted-fill)" stroke="var(--rule-strong)" stroke-width="1.1"/>
-            <text x="47" y="46" text-anchor="middle" font-size="8.5" fill="var(--ink-soft)">층</text>
-            <path d="M74 42 L88 42" stroke="var(--muted)" stroke-width="1.2" marker-end="url(#pf-a)"/>
-            <rect x="92" y="30" width="46" height="24" fill="var(--warn)" opacity="0.22" stroke="var(--warn)" stroke-width="1.4"/>
-            <text x="115" y="46" text-anchor="middle" font-size="8" fill="var(--ink)">어댑터</text>
-            <path d="M142 42 L156 42" stroke="var(--muted)" stroke-width="1.2" marker-end="url(#pf-a)"/>
-            <rect x="160" y="30" width="46" height="24" fill="var(--muted-fill)" stroke="var(--rule-strong)" stroke-width="1.1"/>
-            <text x="183" y="46" text-anchor="middle" font-size="8.5" fill="var(--ink-soft)">층</text>
-            <text x="24" y="76" font-size="8.5" fill="var(--warn)">경로가 길어져 병합 불가 → 지연 증가</text>
+            <line x1="350" y1="30" x2="350" y2="220" stroke="var(--rule)" />
 
-            <line x1="24" y1="90" x2="330" y2="90" stroke="var(--rule)" stroke-width="1"/>
-
-            <text x="24" y="112" font-size="9.5" letter-spacing="1.2" fill="var(--warn)">Prefix — 입력 앞</text>
-            <rect x="24" y="124" width="60" height="24" fill="var(--warn)" opacity="0.22" stroke="var(--warn)" stroke-width="1.4"/>
-            <text x="54" y="140" text-anchor="middle" font-size="8" fill="var(--ink)">가상 토큰</text>
-            <rect x="88" y="124" width="118" height="24" fill="var(--muted-fill)" stroke="var(--rule-strong)" stroke-width="1.1"/>
-            <text x="147" y="140" text-anchor="middle" font-size="8.5" fill="var(--ink-soft)">실제 입력</text>
-            <text x="24" y="170" font-size="8.5" fill="var(--warn)">문맥 길이를 먹는다</text>
-            <text x="24" y="184" font-size="8.5" fill="var(--ink-faint)">가중치는 전혀 안 건드린다</text>
-
-            <line x1="346" y1="26" x2="346" y2="212" stroke="var(--rule)" stroke-width="1"/>
-
-            <text x="370" y="18" font-size="9.5" letter-spacing="1.2" fill="var(--accent)">LoRA — 병렬 (더하기)</text>
-            <rect x="370" y="30" width="70" height="26" fill="var(--muted-fill)" stroke="var(--rule-strong)" stroke-width="1.2" stroke-dasharray="4 3"/>
-            <text x="405" y="47" text-anchor="middle" font-size="8.5" fill="var(--ink-soft)">W₀ ❄</text>
-            <rect x="370" y="64" width="70" height="20" fill="var(--accent-fill)" stroke="var(--accent-line)" stroke-width="1.4"/>
-            <text x="405" y="78" text-anchor="middle" font-size="8" fill="var(--accent)">B A</text>
-            <circle cx="470" cy="52" r="11" fill="none" stroke="var(--accent-line)" stroke-width="1.4"/>
-            <text x="470" y="57" text-anchor="middle" font-size="11" fill="var(--accent)">+</text>
-            <path d="M444 44 L458 48" stroke="var(--rule-strong)" stroke-width="1.2" marker-end="url(#pf-a)"/>
-            <path d="M444 72 L460 60" stroke="var(--accent-line)" stroke-width="1.3" marker-end="url(#pf-b)"/>
-            <text x="370" y="104" font-size="8.5" fill="var(--accent)">W₀ + BA 로 합쳐진다 → 지연 0</text>
-
-            <line x1="370" y1="118" x2="674" y2="118" stroke="var(--rule)" stroke-width="1"/>
-
-            <text x="370" y="140" font-size="9.5" letter-spacing="1.2" fill="var(--accent)">IA³ — 곱하기 (스케일)</text>
-            <rect x="370" y="152" width="70" height="24" fill="var(--muted-fill)" stroke="var(--rule-strong)" stroke-width="1.1"/>
-            <text x="405" y="168" text-anchor="middle" font-size="8.5" fill="var(--ink-soft)">활성값</text>
-            <circle cx="468" cy="164" r="11" fill="none" stroke="var(--accent-line)" stroke-width="1.4"/>
-            <text x="468" y="169" text-anchor="middle" font-size="11" fill="var(--accent)">⊙</text>
-            <path d="M444 164 L456 164" stroke="var(--rule-strong)" stroke-width="1.2" marker-end="url(#pf-a)"/>
-            <rect x="490" y="152" width="60" height="24" fill="var(--accent-fill)" stroke="var(--accent-line)" stroke-width="1.4"/>
-            <text x="520" y="168" text-anchor="middle" font-size="8" fill="var(--accent)">벡터 l</text>
-            <text x="370" y="196" font-size="8.5" fill="var(--accent)">행렬이 아니라 벡터 3개 — 가장 가볍다</text>
-            <text x="370" y="210" font-size="8.5" fill="var(--ink-faint)">1 로 초기화하면 시작 시 항등</text>
+            <text x="384" y="24" font-size="11" fill="var(--accent)">Conv2d LoRA</text>
+            <rect x="384" y="46" width="122" height="44" rx="3" fill="var(--muted-fill)" stroke="var(--rule-strong)"/>
+            <text x="445" y="72" text-anchor="middle" font-size="10" fill="var(--ink-soft)">W₀ frozen</text>
+            <rect x="384" y="112" width="122" height="36" rx="3" fill="var(--accent-fill)" stroke="var(--accent-line)"/>
+            <text x="445" y="135" text-anchor="middle" font-size="9.5" fill="var(--accent)">ΔW = B A</text>
+            <path d="M510 68 L554 68" stroke="var(--muted)" stroke-width="1.4" marker-end="url(#arr)"/>
+            <path d="M510 130 L552 82" stroke="var(--accent-line)" stroke-width="1.5" marker-end="url(#arr2)"/>
+            <circle cx="574" cy="68" r="14" fill="none" stroke="var(--accent-line)" stroke-width="1.5"/>
+            <text x="574" y="73" text-anchor="middle" font-size="14" fill="var(--accent)">+</text>
+            <path d="M590 68 L650 68" stroke="var(--accent-line)" stroke-width="1.5" marker-end="url(#arr2)"/>
+            <text x="552" y="112" font-size="9.5" fill="var(--accent)">merge</text>
+            <text x="384" y="174" font-size="9.5" fill="var(--ink-faint)">배포: W = W₀ + ΔW</text>
+            <text x="384" y="191" font-size="9.5" fill="var(--accent)">추가 operator 없이 가능</text>
           </g>
         </svg>
       </div>
       <figcaption>
         <span class="tag">Fig. 1</span>
-        같은 목표(작은 부분만 학습)에 도달하는 네 가지 경로다.
-        갈리는 지점은 성능이 아니라 <strong>결합 방식</strong> —
-        더하기와 곱하기는 원본에 흡수되고, 직렬 삽입과 접두사는 그렇지 않다.
+        CNN adapter는 특징맵을 보정하는 별도 분기로 남길 수도 있고,
+        Conv2d 저랭크 업데이트처럼 최종 가중치에 합칠 수도 있다.
+        <strong>학습 파라미터 수가 같아도 배포 지연은 전혀 다를 수 있다.</strong>
       </figcaption>
     </figure>
   </section>
 
   <section>
-    <h2><span class="n">05</span>그래서 무엇을 쓰는가</h2>
+    <h2><span class="n">04</span>Conv-Adapter — locality를 보존하는 CNN 전용 PET</h2>
     <p>
-      실무의 기본값은 <strong>LoRA</strong>다. 이유는 성능이 가장 높아서가 아니라
-      <em>제약이 가장 적어서</em>다 — 병합하면 지연이 0이고, 안 하면 어댑터를 갈아끼울 수 있고,
-      하이퍼파라미터가 <code>r</code>과 붙일 위치 정도로 단순하다.
+      Chen 등의 <strong>Conv-Adapter</strong>는 CNN의 중간 특징맵을 직접 보정하도록 설계됐다.
+      공개된 CVPR Workshops 2024 버전은 bottleneck 안에
+      <strong>depth-wise separable convolution과 비선형성</strong>을 사용하고,
+      CNN에서 공간적 locality를 유지하는 것이 중요하다고 분석한다.
     </p>
     <p>
-      다만 선택이 갈리는 경우들이 있다.
+      ResNet-50 BiT-M 기준 실험에서는 전체 파인튜닝 파라미터의 평균 약
+      <strong>3.5%</strong>만 학습하면서 23개 교차 도메인 분류 과제에서
+      full fine-tuning과 비슷하거나 더 나은 결과를 보고했다.
+      분류뿐 아니라 검출·분할에도 확장해, 전체 파인튜닝 대비 학습 파라미터를 크게 줄이면서
+      비슷한 성능을 유지하는 결과를 제시했다.
     </p>
-    <ul>
-      <li><strong>메모리가 극단적으로 부족하면</strong> — QLoRA. 베이스를 4비트로 얼리고 LoRA를 얹는다.</li>
-      <li><strong>예시가 극소수라면</strong> — IA³. few-shot에서 강하다는 결과가 있고, 학습 파라미터가 가장 적다.</li>
-      <li><strong>과제가 수백 개라면</strong> — Prompt Tuning. 과제당 저장 비용이 벡터 몇 개 수준이고, 배치 안에서 서로 다른 접두사를 섞기 쉽다.</li>
-      <li><strong>도메인 자체가 크게 다르면</strong> — PEFT로는 한계가 있다. 사전학습 분포에서 멀리 떨어진 데이터(새 언어, 특수 표기 체계)는 전체 파인튜닝이나 계속 사전학습이 필요할 수 있다.</li>
-    </ul>
     <div class="note">
-      <b>PEFT가 항상 전체 파인튜닝과 같지는 않다.</b> 요약·분류처럼 사전학습 능력을
-      <em>끌어내는</em> 과제에서는 거의 차이가 없지만,
-      새 지식을 <em>주입해야</em> 하는 과제에서는 격차가 남는다는 보고가 있다.
-      "0.1%만 학습해도 100%와 같다"는 표현은 <strong>과제 종류에 따라 조건부로</strong> 읽어야 한다.
+      <b>CNN에서는 “MLP adapter를 그대로 옮기기”보다 공간 구조를 보존하는 쪽이 중요하다.</b>
+      ViT/LLM adapter는 토큰 벡터를 다루지만 ConvNet의 중간 표현은 특징맵이다.
+      작은 depthwise convolution이나 1×1 convolution을 쓰면
+      채널 보정과 국소 공간 정보를 함께 다룰 수 있다.
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">05</span>Conv2d에 LoRA를 붙이는 법 — 커널을 저랭크 업데이트로 본다</h2>
+    <p>
+      LoRA는 선형층 전용 개념이 아니다. Conv2d 커널
+      <code>W ∈ R<sup>Cout × Cin × k × k</sup></code>를
+      <code>Cout × (Cin·k²)</code> 행렬로 보면 같은 저랭크 업데이트를 정의할 수 있다.
+    </p>
+    <div class="eq">
+      <span class="cap">Conv2d low-rank update</span>
+      <div class="line">W' = W<sub>0</sub> + ΔW</div>
+      <div class="line">ΔW = B A,  rank(ΔW) ≤ r</div>
+      <div class="line">A ∈ R<sup>r × (Cin·k²)</sup>,  B ∈ R<sup>Cout × r</sup></div>
     </div>
     <p>
-      정리하면 PEFT 계열의 공통 전제는 하나다 —
-      <em>파인튜닝이 만드는 변화는 좁은 부분공간에 있다.</em>
-      그 전제 위에서 각 방법은 <strong>그 좁은 공간을 어디에 어떻게 마련할지</strong>만 다르게 답한다.
-      그리고 배포 관점에서는 성능 차이보다 <strong>원본에 흡수되는가</strong>가 더 중요한 구분선이 됐다.
+      학습 중에는 저랭크 분기로 계산하고, 배포 전에 <code>ΔW</code>를 커널에 합치면
+      런타임 그래프는 원래 Conv2d 하나로 돌아갈 수 있다.
+      <strong>온디바이스에서는 이 mergeability가 매우 큰 장점</strong>이다.
     </p>
+    <p>
+      다만 depthwise convolution은 <code>groups=Cin</code>이라 일반 Conv처럼
+      입력·출력 채널을 자유롭게 저랭크 결합하기 어렵다.
+      MobileNet·RepViT처럼 depthwise/pointwise가 분리된 구조에서는
+      <strong>1×1 pointwise Conv에 LoRA를 우선 적용</strong>하고,
+      depthwise 쪽은 채널 스케일·작은 spatial adapter로 두는 편이 구현과 런타임 측면에서 단순하다.
+    </p>
+  </section>
+
+  <section>
+    <h2><span class="n">06</span>BN·채널 스케일만 학습하는 초경량 적응</h2>
+    <p>
+      CNN은 BatchNorm이라는 별도 적응 손잡이가 있다.
+      백본 convolution은 모두 얼린 채 <strong>BN의 affine 파라미터 γ·β만 학습</strong>하거나,
+      새 도메인의 running mean/variance만 다시 추정해도 도메인 이동을 어느 정도 흡수할 수 있다.
+      이는 Transformer의 IA³나 FiLM식 channel modulation과 비슷한 관점이다.
+    </p>
+    <div class="eq">
+      <span class="cap">Channel-wise modulation</span>
+      <div class="line">y<sub>c</sub> = γ<sub>c</sub> · x<sub>c</sub> + β<sub>c</sub></div>
+      <div class="line">학습량 O(C), 추가 spatial convolution 없음</div>
+    </div>
+    <p>
+      비용은 매우 작지만 표현력도 제한된다.
+      색감·밝기·센서 통계처럼 <em>feature distribution이 이동한 문제</em>에는 잘 맞고,
+      객체 형태나 텍스처 규칙 자체가 크게 달라지는 경우에는 Conv Adapter나
+      일부 block fine-tuning이 더 필요할 수 있다.
+    </p>
+  </section>
+
+  <section>
+    <h2><span class="n">07</span>온디바이스 배포와 양자화에서 무엇이 달라지는가</h2>
+    <p>
+      학습 파라미터가 3%라고 해서 추론 비용도 3%인 것은 아니다.
+      Adapter가 별도 branch로 남으면 작은 Conv 하나라도
+      <strong>메모리 왕복·kernel launch·그래프 분할</strong> 때문에 지연이 늘 수 있다.
+      반대로 Conv-LoRA처럼 커널에 병합되면 추론 그래프를 원본과 동일하게 유지할 수 있다.
+    </p>
+    <div class="scroller">
+      <table class="data">
+        <thead><tr><th>방법</th><th>학습 메모리</th><th>추론 추가 연산</th><th>온디바이스 권장 상황</th></tr></thead>
+        <tbody>
+          <tr><td>Conv-LoRA</td><td class="hi">낮음</td><td class="hi">병합 후 0</td><td>고정 task·NPU 그래프 유지</td></tr>
+          <tr><td>Parallel Conv Adapter</td><td class="hi">낮음</td><td>분기 유지</td><td>여러 task adapter 교체가 중요</td></tr>
+          <tr><td>BN / Channel scale</td><td class="hi">매우 낮음</td><td class="hi">거의 0</td><td>센서·조명 domain shift</td></tr>
+          <tr><td>Partial fine-tuning</td><td>중간</td><td class="hi">0</td><td>domain gap이 크고 정확도가 우선</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      INT8 PTQ/QAT까지 한다면 adapter를 <strong>병합한 뒤 다시 calibration</strong>하는 편이 안전하다.
+      합쳐진 <code>W'</code>의 채널별 범위가 원본 <code>W₀</code>와 달라질 수 있기 때문이다.
+      특히 per-channel weight quantization을 쓰는 CNN에서는 저랭크 보정이 특정 출력 채널의
+      dynamic range를 크게 바꾸지 않는지 확인해야 한다.
+      자세한 양자화 흐름은 <a href="ondevice-quantization.html">온디바이스 양자화</a>와
+      <a href="calibration.html">캘리브레이션</a> 문서로 이어진다.
+    </p>
+  </section>
+
+  <section>
+    <h2><span class="n">08</span>실무 선택 기준</h2>
+    <ul>
+      <li><strong>한 모델을 여러 제품·카메라 도메인에 공용으로 쓰려면</strong> — frozen CNN + domain-specific residual/Conv Adapter가 관리하기 쉽다.</li>
+      <li><strong>NPU/DSP 그래프를 절대 바꾸고 싶지 않다면</strong> — Conv2d LoRA처럼 최종 커널에 병합 가능한 방법이 가장 안전하다.</li>
+      <li><strong>조명·센서 통계 차이가 주원인이면</strong> — BN affine/statistics 또는 channel scale부터 시도한다.</li>
+      <li><strong>MobileNet·RepViT 계열이면</strong> — depthwise보다 pointwise 1×1 Conv를 먼저 적응 대상으로 본다.</li>
+      <li><strong>도메인 차이가 매우 크거나 새 저수준 특징이 필요하면</strong> — adapter만 고집하지 말고 early block 일부 또는 전체 fine-tuning과 비교한다.</li>
+    </ul>
+    <div class="note">
+      <b>핵심 구분선은 “trainable parameter 비율”이 아니라 “배포할 때 남는 연산”이다.</b>
+      서버 학습에서는 1~3% adapter가 충분히 작아 보이지만,
+      모바일/NPU에서는 unsupported branch 하나가 전체 그래프를 CPU로 쪼갤 수 있다.
+      따라서 정확도 표와 함께 <strong>merge 가능 여부·operator support·양자화 후 range</strong>를 같이 봐야 한다.
+    </div>
   </section>
 """
 
 READING = [
-    "Houlsby et al., <em>Parameter-Efficient Transfer Learning for NLP</em> (arXiv:1902.00751) — 원조 Adapter.",
-    "Li &amp; Liang, <em>Prefix-Tuning: Optimizing Continuous Prompts for Generation</em> (arXiv:2101.00190) — 모든 층의 K·V에 접두사.",
-    "Lester et al., <em>The Power of Scale for Parameter-Efficient Prompt Tuning</em> (arXiv:2104.08691) — 규모가 커지면 격차가 사라진다.",
+    "Rebuffi, Bilen &amp; Vedaldi, <em>Learning Multiple Visual Domains with Residual Adapters</em>, NeurIPS 2017 — CNN residual adapter와 Visual Decathlon.",
+    "Rebuffi, Bilen &amp; Vedaldi, <em>Efficient Parametrization of Multi-Domain Deep Neural Networks</em>, CVPR 2018 — series/parallel adapter와 저랭크 adapter 압축.",
+    "Guo et al., <em>SpotTune: Transfer Learning Through Adaptive Fine-Tuning</em>, CVPR 2019 — 입력별로 frozen/fine-tuned residual block을 선택.",
+    "Chen et al., <em>Conv-Adapter: Exploring Parameter Efficient Transfer Learning for ConvNets</em>, CVPR Workshops 2024 (arXiv:2208.07463) — locality를 보존하는 ConvNet PET.",
+    "Houlsby et al., <em>Parameter-Efficient Transfer Learning for NLP</em> (arXiv:1902.00751) — bottleneck Adapter.",
+    "Hu et al., <em>LoRA: Low-Rank Adaptation of Large Language Models</em> (arXiv:2106.09685) — 저랭크 업데이트와 병합.",
     "Liu et al., <em>Few-Shot Parameter-Efficient Fine-Tuning is Better and Cheaper than In-Context Learning</em> (arXiv:2205.05638) — IA³.",
-    "Zaken et al., <em>BitFit: Simple Parameter-efficient Fine-tuning for Transformer-based Masked Language-models</em> (arXiv:2106.10199) — bias만 학습.",
-    "Hu et al., <em>LoRA: Low-Rank Adaptation of Large Language Models</em> (arXiv:2106.09685) — 병렬 결합의 근거.",
 ]
 
 write(
     "peft-adapters.html",
-    title="PEFT — Adapter·Prefix·IA³",
-    eyebrow="Adaptation · Parameter-Efficient Methods · 2019–2026",
-    h1="PEFT — Adapter·Prefix·IA³",
-    subtitle="LoRA 말고도 있는 길 — 어디에 무엇을 끼워 넣을 것인가",
+    title="PEFT — Adapter·Prefix·IA³ + CNN Adapter",
+    eyebrow="Adaptation · Parameter-Efficient Methods · CNN / Transformer · 2017–2026",
+    h1="PEFT — Adapter와 CNN 적응",
+    subtitle="Transformer의 LoRA에서 CNN의 Residual·Conv Adapter까지",
     dek=(
         "대부분을 얼리고 작은 부분만 학습한다는 목표는 같다. "
-        "갈리는 것은 <strong>어디에 끼워 넣고 어떻게 결합하는가</strong>다. "
-        "직렬로 넣으면 경로가 길어져 추론이 느려지고, 접두사로 넣으면 문맥을 먹는다. "
-        "더하기와 곱하기만이 원본 가중치에 흡수돼 지연 없이 배포된다."
+        "CNN에서는 여기에 <strong>공간 locality·1×1/depthwise convolution·BN·런타임 fusion</strong>이 더해진다. "
+        "같은 3%의 학습 파라미터라도 병합 가능 여부에 따라 온디바이스 지연은 완전히 달라진다."
     ),
     spec=[
-        ("공통 전제", "변화는 좁은 부분공간"),
-        ("Adapter", "직렬 · 병합 불가"),
-        ("Prefix", "문맥 소모"),
-        ("LoRA", "병렬 · 병합 가능"),
-        ("IA³", "스케일 벡터 3개"),
+        ("CNN 원형", "Residual Adapter · 2017"),
+        ("현대 ConvNet", "Conv-Adapter · locality"),
+        ("병합형", "Conv2d LoRA"),
+        ("초경량", "BN / channel scale"),
+        ("배포 기준", "operator · INT8 range"),
     ],
     body=BODY,
     reading=READING,
     light=LIGHT,
     dark=DARK,
-    date="2026-08-10",
+    date="2026-09-03",
 )
