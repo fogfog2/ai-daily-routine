@@ -45,7 +45,7 @@ git add ROUTINE.md && git commit -m "루틴 수정" && git push
 | 저장소 | 내용 | 누가 쓰나 |
 |---|---|---|
 | `fogfog2/ai-daily-routine` | 스킬 · 카탈로그 · 생성기 · 스크립트 | 루틴 |
-| `fogfog2/ai-concepts` | 완성된 HTML 85편과 개념 지도 (GitHub Pages) | 방문자 |
+| `fogfog2/ai-concepts` | 완성된 HTML 86편과 개념 지도 (GitHub Pages) | 방문자 |
 
 루틴은 자기 저장소에서 돌다가, 배포할 때만 사이트 저장소를 clone 해서 푸시합니다.
 `ship-docs.sh` 가 자동으로 합니다.

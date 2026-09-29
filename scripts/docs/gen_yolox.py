@@ -264,6 +264,7 @@ BODY = r"""
       이 차이가 성능 몇 포인트보다 결정적일 수 있다.
     </div>
     <p>
+      <a href="rtmdet-family.html">RTMDet 계열</a>은 같은 1단계 검출 기반에서 백본·넥의 균형과 soft label 할당을 조정하고 마스크·회전 상자로 확장한다.
       YOLOX가 남긴 것은 결국 방향이다 —
       <em>사람이 손으로 정하던 것을 하나씩 학습이나 계산으로 넘긴다.</em>
       앵커를 없앴고, 할당을 계산으로 넘겼다. 남은 수작업은 <a href="nms.html"><strong>NMS</strong></a>였고,

@@ -20,6 +20,7 @@ BODY = r"""
     <p>
       <a href="detection-lineage.html">검출</a>은 물체를 사각형으로 감싼다.
       빠르고 충분한 경우가 많지만, 상자가 답이 되지 않는 상황이 있다.
+      실시간 검출 골격에 물체별 마스크를 더하는 사례는 <a href="rtmdet-family.html">RTMDet-Ins</a>에서 살펴볼 수 있다.
     </p>
     <ul>
       <li><strong>모양이 상자와 다르다.</strong> 도로·하늘·잔디 같은 것은 애초에 사각형이 아니다</li>
