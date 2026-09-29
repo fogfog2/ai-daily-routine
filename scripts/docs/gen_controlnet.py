@@ -49,7 +49,7 @@ BODY = r"""
     </p>
     <div class="eq">
       <span class="cap">구조 — 인코더를 복제해 붙인다</span>
-      <div class="line">원본 U-Net&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>전부 얼림 ❄</strong></div>
+      <div class="line">원본 <a href="u-net-encoder-decoder.html">U-Net</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>전부 얼림 ❄</strong></div>
       <div class="line">&nbsp;&nbsp;+</div>
       <div class="line">인코더 사본&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 학습됨 — 조건 이미지를 받는다</div>
       <div class="line">&nbsp;&nbsp;+</div>

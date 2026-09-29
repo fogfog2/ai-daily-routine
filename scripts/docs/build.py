@@ -36,7 +36,8 @@ def build(title, eyebrow, h1, subtitle, dek, spec, body, reading, light, dark, d
         f"    <div><dt>{k}</dt><dd>{v}</dd></div>" for k, v in spec
     )
     reads = "\n".join(f"      <li>{r}</li>" for r in reading)
-    return f"""<title>{title}</title>
+    return f"""<meta charset="utf-8">
+<title>{title}</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <style>
   {palette_css(light, dark)}

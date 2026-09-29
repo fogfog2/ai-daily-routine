@@ -207,7 +207,7 @@ BODY = r"""
     <h2><span class="n">05</span>조건을 거는 법 — CFG</h2>
     <p>
       "고양이"라고 썼는데 고양이가 나오게 하려면 텍스트 조건을 걸어야 한다.
-      구조적으로는 U-Net에 크로스 어텐션을 넣어 CLIP 텍스트 임베딩을 참조시킨다.
+      구조적으로는 <a href="u-net-encoder-decoder.html">U-Net</a>에 크로스 어텐션을 넣어 CLIP 텍스트 임베딩을 참조시킨다.
       그런데 그것만으로는 <strong>프롬프트를 잘 안 따른다</strong>.
     </p>
     <p>

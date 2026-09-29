@@ -60,7 +60,11 @@ PY
 # 3) 뉴스 데이터 (archive/*.md → news.json)
 python3 build-news.py
 
-# 4) 문서 페이지에 상단 네비게이션 주입
+# 4) 일일 추천과 에이전트 벤치마크 스냅샷
+python3 build-recommendation.py
+python3 build-benchmarks.py
+
+# 5) 문서 페이지에 상단 네비게이션 주입
 python3 build-docs.py | tail -1
 
 echo

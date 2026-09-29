@@ -132,7 +132,7 @@ BODY = r"""
       <div class="line">③ <strong>다중 스케일 융합</strong>&nbsp;여러 해상도를 끝까지 함께 유지</div>
     </div>
     <p>
-      <strong>U-Net</strong> 의 스킵 연결이 특히 중요하다.
+      <a href="u-net-encoder-decoder.html"><strong>U-Net</strong> 의 스킵 연결</a>이 특히 중요하다.
       디코더가 위치 정보를 복원할 때, 인코더 초반의 고해상 특징을 그대로 이어 붙인다.
       깊은 층은 <em>무엇인지</em>를 알고 얕은 층은 <em>어디인지</em>를 아는데, 둘 다 필요하기 때문이다.
       <a href="residual-connections.html">잔차 연결</a>과는 다른 연산이다 —

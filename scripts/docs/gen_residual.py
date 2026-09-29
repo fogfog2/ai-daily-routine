@@ -470,7 +470,7 @@ BODY = r"""
     <div class="note">
       <b>더하기와 잇기는 다르다.</b>
       <a href="segmentation.html">분할</a>과 <a href="diffusion-models.html">확산 모델</a>이 쓰는
-      U-Net 의 스킵은 인코더의 특징 맵을 디코더에 <em>채널 방향으로 잇는다</em>(concat).
+      <a href="u-net-encoder-decoder.html">U-Net 의 스킵</a>은 인코더의 특징 맵을 디코더에 <em>채널 방향으로 잇는다</em>(concat).
       해상도를 잃었다 되찾는 경로에서 잃어버린 고주파를 되돌려주는 것이 목적이고,
       채널 수가 늘어나므로 뒤에 이를 합칠 층이 필요하다.
       잔차의 덧셈은 폭을 유지한 채 <em>같은 자리에 값을 더하는</em> 것이라 목적이 다르다.

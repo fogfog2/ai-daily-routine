@@ -56,6 +56,8 @@ def nav_html(title: str) -> str:
         f'<span class="sep">/</span>'
         f'<span class="cur">{safe}</span>'
         f'</nav>\n'
+        f'<link rel="stylesheet" href="../docs-nav.css">\n'
+        f'<script src="../docs-nav.js" defer></script>\n'
     )
 
 
@@ -86,6 +88,14 @@ def process(path: pathlib.Path, title: str) -> str:
         changed.append("네비 교체")
     else:
         changed.append("네비")
+
+    # 문서 목차 스크립트와 스타일은 네비와 함께 매번 주입하므로 이전 판본을 지운다.
+    html = html.replace('<link rel="stylesheet" href="../docs-nav.css">', '')
+    html = html.replace('<script src="../docs-nav.js" defer></script>', '')
+
+    # 로컬 미리보기 서버와 GitHub Pages 양쪽에서 한글을 안정적으로 해석한다.
+    if not re.search(r'<meta\s+charset=["\']?utf-8', html, re.I):
+        html = '<meta charset="utf-8">\n' + html
 
     m = re.search(r"(<title>.*?</title>\s*\n?)", html, re.S)
     if m:

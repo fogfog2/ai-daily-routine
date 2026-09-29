@@ -1,0 +1,56 @@
+{
+  "as_of": "2026-09-30",
+  "note": "같은 벤치마크의 공개 결과를 기록한다. 모델·에이전트 하네스·노력 수준이 다르면 절대적인 제품 순위로 읽지 않는다.",
+  "benchmark": {
+    "id": "swe-bench-pro-v2-full",
+    "name": "SWE-Bench Pro V2 Full",
+    "metric": "문제 해결률",
+    "unit": "%",
+    "source": "https://labs.scale.com/leaderboard/swe_bench_pro_public_v2?tab=full",
+    "description": "실제 소프트웨어 저장소의 이슈를 해결하는 평가. 아래 점수는 공개 리더보드의 동일 탭에서 확인한 스냅샷이다."
+  },
+  "results": [
+    {
+      "agent": "Claude Code",
+      "model": "Opus 5",
+      "effort": "xhigh",
+      "score": 99.40,
+      "uncertainty": "±0.40",
+      "source": "https://labs.scale.com/leaderboard/swe_bench_pro_public_v2?tab=full",
+      "observed": "2026-09-30"
+    },
+    {
+      "agent": "Codex",
+      "model": "GPT-6 Astra",
+      "effort": "high",
+      "score": 96.90,
+      "uncertainty": "±1.10",
+      "source": "https://labs.scale.com/leaderboard/swe_bench_pro_public_v2?tab=full",
+      "observed": "2026-09-30"
+    },
+    {
+      "agent": "mini-swe-agent",
+      "model": "Gemini 3.8 Flash",
+      "effort": "high",
+      "score": 94.86,
+      "uncertainty": "±1.46",
+      "source": "https://labs.scale.com/leaderboard/swe_bench_pro_public_v2?tab=full",
+      "observed": "2026-09-30"
+    }
+  ],
+  "tracked": [
+    {
+      "name": "Jev",
+      "maker": "TypeSafe AI",
+      "status": "동일 조건 코딩 벤치마크 결과 미확인",
+      "description": "분류·라우팅·점수화 같은 짧은 구조화 판단에 특화된 모델이다. Claude Code·Codex와 같은 코드 수정 과제를 풀도록 만든 제품은 아니므로 별도 영역에서 추적한다.",
+      "source": "https://typesafe.ai/blog/introducing-system-one-models-and-jev"
+    }
+  ],
+  "history": [
+    {
+      "date": "2026-09-30",
+      "summary": "SWE-Bench Pro V2 Full 공개 스냅샷 추가. Jev는 성격이 달라 별도 추적."
+    }
+  ]
+}
