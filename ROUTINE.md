@@ -272,12 +272,23 @@ grep -rln "<주제 키워드>" scripts/docs/gen_*.py
 
 ### 에이전트 벤치마크 확인
 
-배포 전에 `benchmarks.json` 이 가리키는 1차 리더보드와 Jev 공식 발표를 열어
-새 결과가 있는지 확인한다. 숫자가 바뀌었을 때만 `results` 와 `history` 를 갱신한다.
-변경이 없으면 `as_of` 를 오늘로 위장하지 않는다. `observed` 는 실제로 원문을 확인한
-날짜다. Claude Code·Codex·Gemini 결과는 **동일 벤치마크 탭**에서만 비교하고,
-모델·에이전트 하네스·effort 를 반드시 함께 적는다. Jev 는 구조화 판단 모델이므로
-동일 조건의 코드 수정 평가가 확인되기 전에는 점수 순위에 넣지 않는다.
+Claude·Codex 모델 선택을 돕는 비교를 우선한다. `scripts/refresh-benchmarks.py`로
+Artificial Analysis의 공개 모델 페이지를 확인한다. Astra·Sol(6.1 포함)·Luna와
+Fable·Opus·Sonnet을 low·medium·high·xhigh·max 별로 독립 기록한다.
+
+```bash
+python3 scripts/refresh-benchmarks.py
+python3 -m unittest discover -s scripts/tests
+```
+
+원문을 실제로 읽은 회차만 `as_of`·`observed`를 갱신한다. 접근 실패나 구조 변경이면
+기존 스냅샷을 유지하고 RUNLOG에 실패를 기록한다. 숫자 변화가 없는 재확인도
+확인 날짜로만 기록하며, 새 성능 향상이 있었다고 쓰지 않는다.
+미공개 점수는 `null`로 둔다. 다른 effort·버전·공급사 발표로 빈칸을 채우지 않는다.
+점수 단위(%·Elo·지수), 평가 버전, 하네스, fallback 조건, API 작업당 비용을 함께 남긴다.
+AA의 공통 API 평가를 실제 Claude Code·Codex 제품 성능으로 표시하지 않는다.
+공급사 발표·다른 하네스·다른 채점 기준은 별도 데이터로만 기록한다.
+과거 제품 하네스 결과는 원래 확인 날짜와 함께 `historical`에 보관한다.
 
 `scripts/sync-catalog.sh` 는 `benchmarks.json` 과 `recommendation.json` 을 검증해
 공개 사이트 데이터로 복사한다. 두 파일의 출력 JSON 을 직접 편집하지 않는다.

@@ -62,6 +62,7 @@ scripts/
   build-news.py       archive/*.md → news.json (사이트 상단)
   build-docs.py       문서에 상단 네비·목차 스크립트 주입 (멱등)
   build-recommendation.py / build-benchmarks.py  사이트 데이터 검증·복사
+  refresh-benchmarks.py  Claude·Codex 모델 × effort 공개 평가·API 비용 수집
   ship-docs.sh        검증 6단계 → 커밋 → 푸시
   docs/
     build.py          팔레트 + 본문 → 완성 HTML
@@ -114,6 +115,12 @@ python3 check.py ../../site-pages/docs/lora.html    # 점검
 ---
 
 ## 배포
+
+에이전트 평가는 `python3 scripts/refresh-benchmarks.py`로 공개 원문을 확인한 뒤
+`python3 -m unittest discover -s scripts/tests`로 검증합니다. `benchmarks.json`이
+단일 출처이며, 9개 모델 계열 × 5개 effort의 10개 평가를 기록합니다.
+모델·effort·평가 버전별로 공개된 점수만 수집하고 미공개는 `null`로 보존합니다.
+API 작업당 비용·fallback 조건을 함께 비교하며 구독 사용 한도로 환산하지 않습니다.
 
 **GitHub Pages 하나뿐입니다.** 집 서버·로컬 서버·Tailscale·앱 내장 사본은 쓰지 않습니다.
 

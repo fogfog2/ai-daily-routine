@@ -1,56 +1,2495 @@
 {
-  "as_of": "2026-09-30",
-  "note": "같은 벤치마크의 공개 결과를 기록한다. 모델·에이전트 하네스·노력 수준이 다르면 절대적인 제품 순위로 읽지 않는다.",
-  "benchmark": {
-    "id": "swe-bench-pro-v2-full",
-    "name": "SWE-Bench Pro V2 Full",
-    "metric": "문제 해결률",
-    "unit": "%",
-    "source": "https://labs.scale.com/leaderboard/swe_bench_pro_public_v2?tab=full",
-    "description": "실제 소프트웨어 저장소의 이슈를 해결하는 평가. 아래 점수는 공개 리더보드의 동일 탭에서 확인한 스냅샷이다."
-  },
-  "results": [
+  "schema_version": 2,
+  "as_of": "2026-10-06",
+  "timezone": "UTC",
+  "note": "effort 명칭이 같아도 공급사별 토큰 예산은 같지 않다. 아래는 AA의 동일 평가 구현에서 모델 API를 비교한 결과이며 실제 Codex·Claude Code의 도구·시스템 프롬프트·사용 한도에 따라 달라진다. API 작업당 비용은 구독 요금이나 사용 한도 소비량이 아니다. 미공개는 0점과 구분한다.",
+  "efforts": [
+    "low",
+    "medium",
+    "high",
+    "xhigh",
+    "max"
+  ],
+  "models": [
     {
-      "agent": "Claude Code",
-      "model": "Opus 5",
-      "effort": "xhigh",
-      "score": 99.40,
-      "uncertainty": "±0.40",
-      "source": "https://labs.scale.com/leaderboard/swe_bench_pro_public_v2?tab=full",
-      "observed": "2026-09-30"
+      "id": "gpt-6-astra",
+      "name": "GPT-6 Astra",
+      "product": "Codex",
+      "legacy": false
     },
     {
-      "agent": "Codex",
-      "model": "GPT-6 Astra",
-      "effort": "high",
-      "score": 96.90,
-      "uncertainty": "±1.10",
-      "source": "https://labs.scale.com/leaderboard/swe_bench_pro_public_v2?tab=full",
-      "observed": "2026-09-30"
+      "id": "gpt-6-1-sol",
+      "name": "GPT-6.1 Sol",
+      "product": "Codex",
+      "legacy": false
     },
     {
-      "agent": "mini-swe-agent",
-      "model": "Gemini 3.8 Flash",
-      "effort": "high",
-      "score": 94.86,
-      "uncertainty": "±1.46",
-      "source": "https://labs.scale.com/leaderboard/swe_bench_pro_public_v2?tab=full",
-      "observed": "2026-09-30"
+      "id": "gpt-6-sol",
+      "name": "GPT-6 Sol",
+      "product": "Codex",
+      "legacy": false
+    },
+    {
+      "id": "gpt-6-luna",
+      "name": "GPT-6 Luna",
+      "product": "Codex",
+      "legacy": false
+    },
+    {
+      "id": "claude-fable-5-1",
+      "name": "Claude Fable 5.1",
+      "product": "Claude",
+      "legacy": false
+    },
+    {
+      "id": "claude-opus-5-5",
+      "name": "Claude Opus 5.5",
+      "product": "Claude",
+      "legacy": false
+    },
+    {
+      "id": "claude-sonnet-5-5",
+      "name": "Claude Sonnet 5.5",
+      "product": "Claude",
+      "legacy": false
+    },
+    {
+      "id": "claude-opus-5",
+      "name": "Claude Opus 5",
+      "product": "Claude",
+      "legacy": true
+    },
+    {
+      "id": "claude-sonnet-5",
+      "name": "Claude Sonnet 5",
+      "product": "Claude",
+      "legacy": true
     }
   ],
-  "tracked": [
+  "benchmarks": [
     {
-      "name": "Jev",
-      "maker": "TypeSafe AI",
-      "status": "동일 조건 코딩 벤치마크 결과 미확인",
-      "description": "분류·라우팅·점수화 같은 짧은 구조화 판단에 특화된 모델이다. Claude Code·Codex와 같은 코드 수정 과제를 풀도록 만든 제품은 아니므로 별도 영역에서 추적한다.",
-      "source": "https://typesafe.ai/blog/introducing-system-one-models-and-jev"
+      "id": "terminal",
+      "name": "Terminal-Bench 4.0 · AA",
+      "unit": "%",
+      "group": "코딩",
+      "harness": "mini-swe-agent",
+      "description": "66개 터미널 과제, 3회 반복의 pass@1 평균. 모델 API를 같은 하네스로 실행한 AA 평가이며 Claude Code·Codex 제품 자체의 점수가 아니다.",
+      "source": "https://artificialanalysis.ai/evaluations/terminalbench-4-0",
+      "methodology": "https://artificialanalysis.ai/methodology/intelligence-benchmarking",
+      "direction": "higher",
+      "status": "published"
+    },
+    {
+      "id": "science",
+      "name": "Terminal-Bench-Science 0.1 · AA",
+      "unit": "%",
+      "group": "과학·코딩",
+      "harness": "mini-swe-agent",
+      "description": "70개 과학 연구 터미널 과제, 3회 반복의 pass@1 평균. 일부 모델의 낮은 effort는 공개 결과가 없다.",
+      "source": "https://artificialanalysis.ai/evaluations/terminal-bench-science",
+      "methodology": "https://artificialanalysis.ai/methodology/intelligence-benchmarking",
+      "direction": "higher",
+      "status": "published"
+    },
+    {
+      "id": "automation",
+      "name": "AutomationBench-AA",
+      "unit": "%",
+      "group": "업무 자동화",
+      "harness": "AA REST API 평가",
+      "description": "657개 SaaS 업무. 금지 조건을 위반하면 0점, 그렇지 않으면 달성한 목표 비율로 채점한다. Zapier 원본의 엄격한 전체 성공률과 다른 지표다.",
+      "source": "https://artificialanalysis.ai/evaluations/automationbench-aa",
+      "methodology": "https://artificialanalysis.ai/methodology/intelligence-benchmarking",
+      "direction": "higher",
+      "status": "published"
+    },
+    {
+      "id": "briefcase",
+      "name": "AA-Briefcase v1.1",
+      "unit": "Elo",
+      "group": "문서·업무",
+      "harness": "Stirrup",
+      "description": "91개 지식 업무의 과제 성공·분석·발표 품질을 결합한 Elo. 성공률 %와 비교하지 않는다.",
+      "source": "https://artificialanalysis.ai/evaluations/aa-briefcase",
+      "methodology": "https://artificialanalysis.ai/methodology/intelligence-benchmarking",
+      "direction": "higher",
+      "status": "published"
+    },
+    {
+      "id": "gdpval",
+      "name": "GDPval-AA v2.1",
+      "unit": "Elo",
+      "group": "문서·업무",
+      "harness": "Stirrup",
+      "description": "220개 실무 산출물을 판정 패널이 비교하는 Elo. 서로 다른 버전의 Elo는 합치지 않는다.",
+      "source": "https://artificialanalysis.ai/evaluations/gdpval-aa",
+      "methodology": "https://artificialanalysis.ai/methodology/intelligence-benchmarking",
+      "direction": "higher",
+      "status": "published"
+    },
+    {
+      "id": "pdf",
+      "name": "GDP.pdf · All-pass",
+      "unit": "%",
+      "group": "문서·업무",
+      "harness": "AA API 평가",
+      "description": "복잡한 PDF에 근거한 전문 질문 100개, 5회 반복. All-pass 기준이며 평균 부분 점수와 다르다.",
+      "source": "https://artificialanalysis.ai/evaluations/gdp-pdf",
+      "methodology": "https://artificialanalysis.ai/methodology/intelligence-benchmarking",
+      "direction": "higher",
+      "status": "published"
+    },
+    {
+      "id": "context",
+      "name": "AA-LCR v1.1",
+      "unit": "%",
+      "group": "긴 문맥",
+      "harness": "AA API 평가",
+      "description": "긴 입력을 읽고 추론하는 100문항, 3회 반복. 문맥 창의 최대 크기 자체를 측정하는 지표는 아니다.",
+      "source": "https://artificialanalysis.ai/evaluations/artificial-analysis-long-context-reasoning",
+      "methodology": "https://artificialanalysis.ai/methodology/intelligence-benchmarking",
+      "direction": "higher",
+      "status": "published"
+    },
+    {
+      "id": "scicode",
+      "name": "SciCode · AA",
+      "unit": "%",
+      "group": "과학·코딩",
+      "harness": "AA 코드 실행 평가",
+      "description": "288개 과학 코딩 하위 문제, 3회 반복. AA에서 Under review로 표시하므로 잠정 결과로 읽는다.",
+      "source": "https://artificialanalysis.ai/evaluations/scicode",
+      "methodology": "https://artificialanalysis.ai/methodology/intelligence-benchmarking",
+      "direction": "higher",
+      "status": "under-review"
+    },
+    {
+      "id": "hle",
+      "name": "Humanity’s Last Exam · AA",
+      "unit": "%",
+      "group": "추론",
+      "harness": "AA API 평가 · 도구 없음",
+      "description": "2,158개 전문 지식·추론 문제. 도구를 쓰는 공급사 HLE 수치와 조건이 다르다.",
+      "source": "https://artificialanalysis.ai/evaluations/humanitys-last-exam",
+      "methodology": "https://artificialanalysis.ai/methodology/intelligence-benchmarking",
+      "direction": "higher",
+      "status": "published"
+    },
+    {
+      "id": "index",
+      "name": "AA Intelligence Index v4.3.2",
+      "unit": "점",
+      "group": "종합",
+      "harness": "AA 평가 10종 가중 집계",
+      "description": "독립 평가 10종의 가중 지수. 코딩 에이전트 해결률이 아니며 한국어 품질을 직접 평가하지 않는다. 비용은 해당 지수의 가중 평균 API 작업당 비용이다.",
+      "source": "https://artificialanalysis.ai/models",
+      "methodology": "https://artificialanalysis.ai/methodology/intelligence-benchmarking",
+      "direction": "higher",
+      "status": "published"
+    }
+  ],
+  "results": [
+    {
+      "model": "gpt-6-astra",
+      "effort": "low",
+      "source_label": "GPT-6 Astra (Low)",
+      "source": "https://artificialanalysis.ai/models/gpt-6-astra-low",
+      "observed": "2026-10-06",
+      "fallback": "없음",
+      "scores": {
+        "terminal": {
+          "score": 41.9192,
+          "cost": 2.248558
+        },
+        "science": {
+          "score": null,
+          "cost": null
+        },
+        "automation": {
+          "score": 59.0967,
+          "cost": 0.999085
+        },
+        "briefcase": {
+          "score": 1260.6,
+          "cost": 1.442991
+        },
+        "gdpval": {
+          "score": 1365.6,
+          "cost": 0.854509
+        },
+        "pdf": {
+          "score": 30.4,
+          "cost": 1.696319
+        },
+        "context": {
+          "score": 80.0,
+          "cost": 0.950098
+        },
+        "scicode": {
+          "score": 54.0509,
+          "cost": 0.042507
+        },
+        "hle": {
+          "score": 49.2122,
+          "cost": 0.038865
+        },
+        "index": {
+          "score": 45.7819,
+          "cost": 0.817514
+        }
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "medium",
+      "source_label": "GPT-6 Astra (Medium)",
+      "source": "https://artificialanalysis.ai/models/gpt-6-astra-medium",
+      "observed": "2026-10-06",
+      "fallback": "없음",
+      "scores": {
+        "terminal": {
+          "score": 49.4949,
+          "cost": 4.430108
+        },
+        "science": {
+          "score": null,
+          "cost": null
+        },
+        "automation": {
+          "score": 64.595,
+          "cost": 1.177021
+        },
+        "briefcase": {
+          "score": 1459.22,
+          "cost": 3.939986
+        },
+        "gdpval": {
+          "score": 1467.88,
+          "cost": 1.822413
+        },
+        "pdf": {
+          "score": 30.4,
+          "cost": 1.719809
+        },
+        "context": {
+          "score": 79.6667,
+          "cost": 0.95325
+        },
+        "scicode": {
+          "score": 54.1667,
+          "cost": 0.050875
+        },
+        "hle": {
+          "score": 52.734,
+          "cost": 0.100529
+        },
+        "index": {
+          "score": 49.5704,
+          "cost": 1.540649
+        }
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "high",
+      "source_label": "GPT-6 Astra (High)",
+      "source": "https://artificialanalysis.ai/models/gpt-6-astra-high",
+      "observed": "2026-10-06",
+      "fallback": "없음",
+      "scores": {
+        "terminal": {
+          "score": 54.0404,
+          "cost": 4.046993
+        },
+        "science": {
+          "score": null,
+          "cost": null
+        },
+        "automation": {
+          "score": 66.6122,
+          "cost": 1.295185
+        },
+        "briefcase": {
+          "score": 1506.86,
+          "cost": 4.763526
+        },
+        "gdpval": {
+          "score": 1484.52,
+          "cost": 2.432198
+        },
+        "pdf": {
+          "score": 31.0,
+          "cost": 1.794824
+        },
+        "context": {
+          "score": 80.0,
+          "cost": 0.959718
+        },
+        "scicode": {
+          "score": 55.4398,
+          "cost": 0.069578
+        },
+        "hle": {
+          "score": 53.0584,
+          "cost": 0.161848
+        },
+        "index": {
+          "score": 50.9191,
+          "cost": 1.725253
+        }
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "source_label": "GPT-6 Astra (Xhigh)",
+      "source": "https://artificialanalysis.ai/models/gpt-6-astra-xhigh",
+      "observed": "2026-10-06",
+      "fallback": "없음",
+      "scores": {
+        "terminal": {
+          "score": 59.596,
+          "cost": 5.855483
+        },
+        "science": {
+          "score": null,
+          "cost": null
+        },
+        "automation": {
+          "score": 67.1778,
+          "cost": 1.406389
+        },
+        "briefcase": {
+          "score": 1543.68,
+          "cost": 6.563521
+        },
+        "gdpval": {
+          "score": 1516.48,
+          "cost": 3.038141
+        },
+        "pdf": {
+          "score": 32.2,
+          "cost": 1.912723
+        },
+        "context": {
+          "score": 80.0,
+          "cost": 0.96991
+        },
+        "scicode": {
+          "score": 55.6713,
+          "cost": 0.121633
+        },
+        "hle": {
+          "score": 54.5876,
+          "cost": 0.253223
+        },
+        "index": {
+          "score": 52.3863,
+          "cost": 2.308796
+        }
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "max",
+      "source_label": "GPT-6 Astra (Max)",
+      "source": "https://artificialanalysis.ai/models/gpt-6-astra",
+      "observed": "2026-10-06",
+      "fallback": "없음",
+      "scores": {
+        "terminal": {
+          "score": 59.0909,
+          "cost": 8.498119
+        },
+        "science": {
+          "score": 63.3333,
+          "cost": null
+        },
+        "automation": {
+          "score": 68.4917,
+          "cost": 1.595592
+        },
+        "briefcase": {
+          "score": 1568.86,
+          "cost": 9.502084
+        },
+        "gdpval": {
+          "score": 1541.89,
+          "cost": 4.529484
+        },
+        "pdf": {
+          "score": 31.0,
+          "cost": 2.075821
+        },
+        "context": {
+          "score": 80.6667,
+          "cost": 0.997306
+        },
+        "scicode": {
+          "score": 56.4815,
+          "cost": 0.232259
+        },
+        "hle": {
+          "score": 54.6803,
+          "cost": 0.378077
+        },
+        "index": {
+          "score": 52.6737,
+          "cost": 3.2575
+        }
+      }
+    },
+    {
+      "model": "gpt-6-1-sol",
+      "effort": "low",
+      "source_label": "GPT-6.1 Sol (Low)",
+      "source": "https://artificialanalysis.ai/models/gpt-6-1-sol-low",
+      "observed": "2026-10-06",
+      "fallback": "없음",
+      "scores": {
+        "terminal": {
+          "score": 30.8081,
+          "cost": 0.382942
+        },
+        "science": {
+          "score": null,
+          "cost": null
+        },
+        "automation": {
+          "score": 52.5709,
+          "cost": 0.159439
+        },
+        "briefcase": {
+          "score": 1118.39,
+          "cost": 0.177091
+        },
+        "gdpval": {
+          "score": 1297,
+          "cost": 0.104992
+        },
+        "pdf": {
+          "score": 27.0,
+          "cost": 0.33414
+        },
+        "context": {
+          "score": 84.0,
+          "cost": 0.189928
+        },
+        "scicode": {
+          "score": 53.2407,
+          "cost": 0.008425
+        },
+        "hle": {
+          "score": 47.3587,
+          "cost": 0.007308
+        },
+        "index": {
+          "score": 42.0836,
+          "cost": 0.130752
+        }
+      }
+    },
+    {
+      "model": "gpt-6-1-sol",
+      "effort": "medium",
+      "source_label": "GPT-6.1 Sol (Medium)",
+      "source": "https://artificialanalysis.ai/models/gpt-6-1-sol-medium",
+      "observed": "2026-10-06",
+      "fallback": "없음",
+      "scores": {
+        "terminal": {
+          "score": 47.9798,
+          "cost": 0.613755
+        },
+        "science": {
+          "score": null,
+          "cost": null
+        },
+        "automation": {
+          "score": 62.5735,
+          "cost": 0.196304
+        },
+        "briefcase": {
+          "score": 1364.77,
+          "cost": 0.46437
+        },
+        "gdpval": {
+          "score": 1432.94,
+          "cost": 0.231161
+        },
+        "pdf": {
+          "score": 30.0,
+          "cost": 0.337478
+        },
+        "context": {
+          "score": 83.3333,
+          "cost": 0.190227
+        },
+        "scicode": {
+          "score": 53.2407,
+          "cost": 0.009315
+        },
+        "hle": {
+          "score": 49.861,
+          "cost": 0.012619
+        },
+        "index": {
+          "score": 47.7833,
+          "cost": 0.213701
+        }
+      }
+    },
+    {
+      "model": "gpt-6-1-sol",
+      "effort": "high",
+      "source_label": "GPT-6.1 Sol (High)",
+      "source": "https://artificialanalysis.ai/models/gpt-6-1-sol-high",
+      "observed": "2026-10-06",
+      "fallback": "없음",
+      "scores": {
+        "terminal": {
+          "score": 51.5152,
+          "cost": 0.828177
+        },
+        "science": {
+          "score": null,
+          "cost": null
+        },
+        "automation": {
+          "score": 64.4952,
+          "cost": 0.225781
+        },
+        "briefcase": {
+          "score": 1471.09,
+          "cost": 0.836929
+        },
+        "gdpval": {
+          "score": 1486.41,
+          "cost": 0.427735
+        },
+        "pdf": {
+          "score": 32.0,
+          "cost": 0.349401
+        },
+        "context": {
+          "score": 82.3333,
+          "cost": 0.191381
+        },
+        "scicode": {
+          "score": 55.787,
+          "cost": 0.012967
+        },
+        "hle": {
+          "score": 51.3902,
+          "cost": 0.026634
+        },
+        "index": {
+          "score": 50.2378,
+          "cost": 0.319144
+        }
+      }
+    },
+    {
+      "model": "gpt-6-1-sol",
+      "effort": "xhigh",
+      "source_label": "GPT-6.1 Sol (Xhigh)",
+      "source": "https://artificialanalysis.ai/models/gpt-6-1-sol-xhigh",
+      "observed": "2026-10-06",
+      "fallback": "없음",
+      "scores": {
+        "terminal": {
+          "score": 54.0404,
+          "cost": 1.025949
+        },
+        "science": {
+          "score": null,
+          "cost": null
+        },
+        "automation": {
+          "score": 66.5737,
+          "cost": 0.250558
+        },
+        "briefcase": {
+          "score": 1506.81,
+          "cost": 1.038563
+        },
+        "gdpval": {
+          "score": 1510.4,
+          "cost": 0.558465
+        },
+        "pdf": {
+          "score": 31.8,
+          "cost": 0.368051
+        },
+        "context": {
+          "score": 79.6667,
+          "cost": 0.19347
+        },
+        "scicode": {
+          "score": 55.6713,
+          "cost": 0.022048
+        },
+        "hle": {
+          "score": 52.6413,
+          "cost": 0.042817
+        },
+        "index": {
+          "score": 51.0378,
+          "cost": 0.392861
+        }
+      }
+    },
+    {
+      "model": "gpt-6-1-sol",
+      "effort": "max",
+      "source_label": "GPT-6.1 Sol (Max)",
+      "source": "https://artificialanalysis.ai/models/gpt-6-1-sol",
+      "observed": "2026-10-06",
+      "fallback": "없음",
+      "scores": {
+        "terminal": {
+          "score": 56.0606,
+          "cost": 1.822763
+        },
+        "science": {
+          "score": 58.0952,
+          "cost": null
+        },
+        "automation": {
+          "score": 64.8684,
+          "cost": 0.296819
+        },
+        "briefcase": {
+          "score": 1564.21,
+          "cost": 2.312603
+        },
+        "gdpval": {
+          "score": 1575.09,
+          "cost": 0.893514
+        },
+        "pdf": {
+          "score": 31.0,
+          "cost": 0.419866
+        },
+        "context": {
+          "score": 83.0,
+          "cost": 0.199403
+        },
+        "scicode": {
+          "score": 54.1667,
+          "cost": 0.043419
+        },
+        "hle": {
+          "score": 52.9194,
+          "cost": 0.077574
+        },
+        "index": {
+          "score": 51.8333,
+          "cost": 0.724167
+        }
+      }
+    },
+    {
+      "model": "gpt-6-sol",
+      "effort": "low",
+      "source_label": "GPT-6 Sol (Low)",
+      "source": "https://artificialanalysis.ai/models/gpt-6-sol-low",
+      "observed": "2026-10-06",
+      "fallback": "없음",
+      "scores": {
+        "terminal": {
+          "score": 9.0909,
+          "cost": 0.488908
+        },
+        "science": {
+          "score": 3.3333,
+          "cost": null
+        },
+        "automation": {
+          "score": 53.89,
+          "cost": 0.190645
+        },
+        "briefcase": {
+          "score": 886.29,
+          "cost": 0.127058
+        },
+        "gdpval": {
+          "score": 1203.77,
+          "cost": 0.088679
+        },
+        "pdf": {
+          "score": 24.2,
+          "cost": 0.330648
+        },
+        "context": {
+          "score": 79.3333,
+          "cost": 0.189997
+        },
+        "scicode": {
+          "score": 50.2315,
+          "cost": 0.007427
+        },
+        "hle": {
+          "score": 34.9398,
+          "cost": 0.006981
+        },
+        "index": {
+          "score": 34.1549,
+          "cost": 0.132777
+        }
+      }
+    },
+    {
+      "model": "gpt-6-sol",
+      "effort": "medium",
+      "source_label": "GPT-6 Sol (Medium)",
+      "source": "https://artificialanalysis.ai/models/gpt-6-sol-medium",
+      "observed": "2026-10-06",
+      "fallback": "없음",
+      "scores": {
+        "terminal": {
+          "score": 18.6869,
+          "cost": 1.118734
+        },
+        "science": {
+          "score": 8.5714,
+          "cost": null
+        },
+        "automation": {
+          "score": 57.9722,
+          "cost": 0.218001
+        },
+        "briefcase": {
+          "score": 1149.54,
+          "cost": 0.330256
+        },
+        "gdpval": {
+          "score": 1349.58,
+          "cost": 0.239617
+        },
+        "pdf": {
+          "score": 23.8,
+          "cost": 0.336661
+        },
+        "context": {
+          "score": 82.3333,
+          "cost": 0.19075
+        },
+        "scicode": {
+          "score": 53.8194,
+          "cost": 0.009487
+        },
+        "hle": {
+          "score": 40.9639,
+          "cost": 0.017462
+        },
+        "index": {
+          "score": 39.8119,
+          "cost": 0.247286
+        }
+      }
+    },
+    {
+      "model": "gpt-6-sol",
+      "effort": "high",
+      "source_label": "GPT-6 Sol (High)",
+      "source": "https://artificialanalysis.ai/models/gpt-6-sol-high",
+      "observed": "2026-10-06",
+      "fallback": "없음",
+      "scores": {
+        "terminal": {
+          "score": 26.2626,
+          "cost": 1.599009
+        },
+        "science": {
+          "score": 17.1429,
+          "cost": null
+        },
+        "automation": {
+          "score": 60.1258,
+          "cost": 0.253782
+        },
+        "briefcase": {
+          "score": 1267.84,
+          "cost": 0.639028
+        },
+        "gdpval": {
+          "score": 1395.6,
+          "cost": 0.458555
+        },
+        "pdf": {
+          "score": 24.4,
+          "cost": 0.347504
+        },
+        "context": {
+          "score": 83.6667,
+          "cost": 0.19135
+        },
+        "scicode": {
+          "score": 54.8611,
+          "cost": 0.013034
+        },
+        "hle": {
+          "score": 44.1149,
+          "cost": 0.03311
+        },
+        "index": {
+          "score": 42.4005,
+          "cost": 0.372841
+        }
+      }
+    },
+    {
+      "model": "gpt-6-sol",
+      "effort": "xhigh",
+      "source_label": "GPT-6 Sol (Xhigh)",
+      "source": "https://artificialanalysis.ai/models/gpt-6-sol-xhigh",
+      "observed": "2026-10-06",
+      "fallback": "없음",
+      "scores": {
+        "terminal": {
+          "score": 30.303,
+          "cost": 1.905524
+        },
+        "science": {
+          "score": 17.619,
+          "cost": null
+        },
+        "automation": {
+          "score": 61.6942,
+          "cost": 0.291505
+        },
+        "briefcase": {
+          "score": 1359.41,
+          "cost": 1.131081
+        },
+        "gdpval": {
+          "score": 1457.2,
+          "cost": 0.741722
+        },
+        "pdf": {
+          "score": 24.6,
+          "cost": 0.370017
+        },
+        "context": {
+          "score": 81.3333,
+          "cost": 0.193265
+        },
+        "scicode": {
+          "score": 55.0926,
+          "cost": 0.021459
+        },
+        "hle": {
+          "score": 46.2929,
+          "cost": 0.059095
+        },
+        "index": {
+          "score": 44.2449,
+          "cost": 0.52081
+        }
+      }
+    },
+    {
+      "model": "gpt-6-sol",
+      "effort": "max",
+      "source_label": "GPT-6 Sol (Max)",
+      "source": "https://artificialanalysis.ai/models/gpt-6-sol",
+      "observed": "2026-10-06",
+      "fallback": "없음",
+      "scores": {
+        "terminal": {
+          "score": 43.9394,
+          "cost": 4.003379
+        },
+        "science": {
+          "score": 30.0,
+          "cost": null
+        },
+        "automation": {
+          "score": 61.6337,
+          "cost": 0.357772
+        },
+        "briefcase": {
+          "score": 1479.07,
+          "cost": 2.624312
+        },
+        "gdpval": {
+          "score": 1509.92,
+          "cost": 1.276525
+        },
+        "pdf": {
+          "score": 25.2,
+          "cost": 0.425371
+        },
+        "context": {
+          "score": 83.6667,
+          "cost": 0.198201
+        },
+        "scicode": {
+          "score": 57.6389,
+          "cost": 0.04249
+        },
+        "hle": {
+          "score": 47.9147,
+          "cost": 0.11972
+        },
+        "index": {
+          "score": 47.6305,
+          "cost": 1.044662
+        }
+      }
+    },
+    {
+      "model": "gpt-6-luna",
+      "effort": "low",
+      "source_label": "GPT-6 Luna (Low)",
+      "source": "https://artificialanalysis.ai/models/gpt-6-luna-low",
+      "observed": "2026-10-06",
+      "fallback": "없음",
+      "scores": {
+        "terminal": {
+          "score": 0,
+          "cost": 0.005448
+        },
+        "science": {
+          "score": null,
+          "cost": null
+        },
+        "automation": {
+          "score": 12.0492,
+          "cost": 0.005878
+        },
+        "briefcase": {
+          "score": 741.01,
+          "cost": 0.006086
+        },
+        "gdpval": {
+          "score": 1035.61,
+          "cost": 0.003793
+        },
+        "pdf": {
+          "score": 9.0,
+          "cost": 0.016602
+        },
+        "context": {
+          "score": 74.0,
+          "cost": 0.009561
+        },
+        "scicode": {
+          "score": 46.875,
+          "cost": 0.000511
+        },
+        "hle": {
+          "score": 20.2502,
+          "cost": 0.000522
+        },
+        "index": {
+          "score": 21.5262,
+          "cost": 0.004517
+        }
+      }
+    },
+    {
+      "model": "gpt-6-luna",
+      "effort": "medium",
+      "source_label": "GPT-6 Luna (Medium)",
+      "source": "https://artificialanalysis.ai/models/gpt-6-luna-medium",
+      "observed": "2026-10-06",
+      "fallback": "없음",
+      "scores": {
+        "terminal": {
+          "score": 2.5253,
+          "cost": 0.071565
+        },
+        "science": {
+          "score": null,
+          "cost": null
+        },
+        "automation": {
+          "score": 40.4614,
+          "cost": 0.016571
+        },
+        "briefcase": {
+          "score": 1099.09,
+          "cost": 0.033123
+        },
+        "gdpval": {
+          "score": 1261.62,
+          "cost": 0.016936
+        },
+        "pdf": {
+          "score": 13.8,
+          "cost": 0.017432
+        },
+        "context": {
+          "score": 78.3333,
+          "cost": 0.009635
+        },
+        "scicode": {
+          "score": 50.9259,
+          "cost": 0.000699
+        },
+        "hle": {
+          "score": 28.2669,
+          "cost": 0.001615
+        },
+        "index": {
+          "score": 29.9252,
+          "cost": 0.017477
+        }
+      }
+    },
+    {
+      "model": "gpt-6-luna",
+      "effort": "high",
+      "source_label": "GPT-6 Luna (High)",
+      "source": "https://artificialanalysis.ai/models/gpt-6-luna-high",
+      "observed": "2026-10-06",
+      "fallback": "없음",
+      "scores": {
+        "terminal": {
+          "score": 4.5455,
+          "cost": 0.120401
+        },
+        "science": {
+          "score": null,
+          "cost": null
+        },
+        "automation": {
+          "score": 47.8245,
+          "cost": 0.02075
+        },
+        "briefcase": {
+          "score": 1185.75,
+          "cost": 0.062208
+        },
+        "gdpval": {
+          "score": 1344.09,
+          "cost": 0.031902
+        },
+        "pdf": {
+          "score": 18.2,
+          "cost": 0.018825
+        },
+        "context": {
+          "score": 79.3333,
+          "cost": 0.009704
+        },
+        "scicode": {
+          "score": 50.3472,
+          "cost": 0.00098
+        },
+        "hle": {
+          "score": 32.9472,
+          "cost": 0.003039
+        },
+        "index": {
+          "score": 32.9282,
+          "cost": 0.029032
+        }
+      }
+    },
+    {
+      "model": "gpt-6-luna",
+      "effort": "xhigh",
+      "source_label": "GPT-6 Luna (Xhigh)",
+      "source": "https://artificialanalysis.ai/models/gpt-6-luna-xhigh",
+      "observed": "2026-10-06",
+      "fallback": "없음",
+      "scores": {
+        "terminal": {
+          "score": 8.0808,
+          "cost": 0.198178
+        },
+        "science": {
+          "score": null,
+          "cost": null
+        },
+        "automation": {
+          "score": 47.8007,
+          "cost": 0.023298
+        },
+        "briefcase": {
+          "score": 1236.79,
+          "cost": 0.0825
+        },
+        "gdpval": {
+          "score": 1363.6,
+          "cost": 0.045715
+        },
+        "pdf": {
+          "score": 18.6,
+          "cost": 0.020664
+        },
+        "context": {
+          "score": 80.0,
+          "cost": 0.009817
+        },
+        "scicode": {
+          "score": 51.7361,
+          "cost": 0.001439
+        },
+        "hle": {
+          "score": 34.3373,
+          "cost": 0.005092
+        },
+        "index": {
+          "score": 34.5587,
+          "cost": 0.042184
+        }
+      }
+    },
+    {
+      "model": "gpt-6-luna",
+      "effort": "max",
+      "source_label": "GPT-6 Luna (Max)",
+      "source": "https://artificialanalysis.ai/models/gpt-6-luna",
+      "observed": "2026-10-06",
+      "fallback": "없음",
+      "scores": {
+        "terminal": {
+          "score": 12.6263,
+          "cost": 0.236211
+        },
+        "science": {
+          "score": 8.5714,
+          "cost": null
+        },
+        "automation": {
+          "score": 53.1681,
+          "cost": 0.0364
+        },
+        "briefcase": {
+          "score": 1336.1,
+          "cost": 0.169992
+        },
+        "gdpval": {
+          "score": 1437.07,
+          "cost": 0.089354
+        },
+        "pdf": {
+          "score": 22.8,
+          "cost": 0.028547
+        },
+        "context": {
+          "score": 83.3333,
+          "cost": 0.010188
+        },
+        "scicode": {
+          "score": 54.6296,
+          "cost": 0.003677
+        },
+        "hle": {
+          "score": 38.5079,
+          "cost": 0.011812
+        },
+        "index": {
+          "score": 38.1245,
+          "cost": 0.067823
+        }
+      }
+    },
+    {
+      "model": "claude-fable-5-1",
+      "effort": "low",
+      "source_label": "Claude Fable 5.1 (Low, Default Fallback)",
+      "source": "https://artificialanalysis.ai/models/claude-fable-5-1-low",
+      "observed": "2026-10-06",
+      "fallback": "Default Fallback",
+      "scores": {
+        "terminal": {
+          "score": 40.404,
+          "cost": 7.323981
+        },
+        "science": {
+          "score": null,
+          "cost": null
+        },
+        "automation": {
+          "score": 52.2404,
+          "cost": 1.516212
+        },
+        "briefcase": {
+          "score": 1481.74,
+          "cost": 6.721304
+        },
+        "gdpval": {
+          "score": 1468.64,
+          "cost": 1.426701
+        },
+        "pdf": {
+          "score": 28.0,
+          "cost": 1.923303
+        },
+        "context": {
+          "score": 82.3333,
+          "cost": 1.468983
+        },
+        "scicode": {
+          "score": 56.713,
+          "cost": 0.068973
+        },
+        "hle": {
+          "score": 48.8879,
+          "cost": 0.123833
+        },
+        "index": {
+          "score": 46.8163,
+          "cost": 2.371025
+        }
+      }
+    },
+    {
+      "model": "claude-fable-5-1",
+      "effort": "medium",
+      "source_label": "Claude Fable 5.1 (Medium, Default Fallback)",
+      "source": "https://artificialanalysis.ai/models/claude-fable-5-1-medium",
+      "observed": "2026-10-06",
+      "fallback": "Default Fallback",
+      "scores": {
+        "terminal": {
+          "score": 44.9495,
+          "cost": 9.124328
+        },
+        "science": {
+          "score": null,
+          "cost": null
+        },
+        "automation": {
+          "score": 54.661,
+          "cost": 1.643046
+        },
+        "briefcase": {
+          "score": 1528.84,
+          "cost": 8.580195
+        },
+        "gdpval": {
+          "score": 1549.16,
+          "cost": 2.18417
+        },
+        "pdf": {
+          "score": 26.8,
+          "cost": 1.960191
+        },
+        "context": {
+          "score": 84.6667,
+          "cost": 1.475183
+        },
+        "scicode": {
+          "score": 56.3657,
+          "cost": 0.075624
+        },
+        "hle": {
+          "score": 53.7998,
+          "cost": 0.225417
+        },
+        "index": {
+          "score": 48.9206,
+          "cost": 2.982597
+        }
+      }
+    },
+    {
+      "model": "claude-fable-5-1",
+      "effort": "high",
+      "source_label": "Claude Fable 5.1 (High, Default Fallback)",
+      "source": "https://artificialanalysis.ai/models/claude-fable-5-1-high",
+      "observed": "2026-10-06",
+      "fallback": "Default Fallback",
+      "scores": {
+        "terminal": {
+          "score": 52.0202,
+          "cost": 11.639563
+        },
+        "science": {
+          "score": null,
+          "cost": null
+        },
+        "automation": {
+          "score": 55.3231,
+          "cost": 1.766176
+        },
+        "briefcase": {
+          "score": 1581.33,
+          "cost": 11.398793
+        },
+        "gdpval": {
+          "score": 1635.44,
+          "cost": 3.478705
+        },
+        "pdf": {
+          "score": 26.8,
+          "cost": 2.020452
+        },
+        "context": {
+          "score": 83.6667,
+          "cost": 1.481045
+        },
+        "scicode": {
+          "score": 58.6806,
+          "cost": 0.089098
+        },
+        "hle": {
+          "score": 55.9314,
+          "cost": 0.396984
+        },
+        "index": {
+          "score": 51.1516,
+          "cost": 3.912527
+        }
+      }
+    },
+    {
+      "model": "claude-fable-5-1",
+      "effort": "xhigh",
+      "source_label": "Claude Fable 5.1 (Xhigh, Default Fallback)",
+      "source": "https://artificialanalysis.ai/models/claude-fable-5-1-xhigh",
+      "observed": "2026-10-06",
+      "fallback": "Default Fallback",
+      "scores": {
+        "terminal": {
+          "score": 55.0505,
+          "cost": 15.783099
+        },
+        "science": {
+          "score": null,
+          "cost": null
+        },
+        "automation": {
+          "score": 57.7724,
+          "cost": 2.201212
+        },
+        "briefcase": {
+          "score": 1656.65,
+          "cost": 17.794043
+        },
+        "gdpval": {
+          "score": 1735.06,
+          "cost": 7.215167
+        },
+        "pdf": {
+          "score": 26.2,
+          "cost": 2.322967
+        },
+        "context": {
+          "score": 83.0,
+          "cost": 1.507818
+        },
+        "scicode": {
+          "score": 60.8796,
+          "cost": 0.241038
+        },
+        "hle": {
+          "score": 58.7118,
+          "cost": 1.025439
+        },
+        "index": {
+          "score": 53.2033,
+          "cost": 5.978304
+        }
+      }
+    },
+    {
+      "model": "claude-fable-5-1",
+      "effort": "max",
+      "source_label": "Claude Fable 5.1 (Max, Default Fallback)",
+      "source": "https://artificialanalysis.ai/models/claude-fable-5-1",
+      "observed": "2026-10-06",
+      "fallback": "Default Fallback",
+      "scores": {
+        "terminal": {
+          "score": 52.0202,
+          "cost": 19.21848
+        },
+        "science": {
+          "score": 43.3333,
+          "cost": null
+        },
+        "automation": {
+          "score": 59.3759,
+          "cost": 2.611294
+        },
+        "briefcase": {
+          "score": 1675.51,
+          "cost": 22.713459
+        },
+        "gdpval": {
+          "score": 1757.77,
+          "cost": 9.774869
+        },
+        "pdf": {
+          "score": 26.2,
+          "cost": 2.774891
+        },
+        "context": {
+          "score": 85.3333,
+          "cost": 1.58448
+        },
+        "scicode": {
+          "score": 63.0787,
+          "cost": 0.658519
+        },
+        "hle": {
+          "score": 59.1288,
+          "cost": 1.585892
+        },
+        "index": {
+          "score": 53.3549,
+          "cost": 7.629706
+        }
+      }
+    },
+    {
+      "model": "claude-opus-5-5",
+      "effort": "low",
+      "source_label": "Claude Opus 5.5 (Low, Default Fallback)",
+      "source": "https://artificialanalysis.ai/models/claude-opus-5-5-low",
+      "observed": "2026-10-06",
+      "fallback": "Default Fallback",
+      "scores": {
+        "terminal": {
+          "score": 31.3131,
+          "cost": 2.07765
+        },
+        "science": {
+          "score": 24.2857,
+          "cost": null
+        },
+        "automation": {
+          "score": 52.9254,
+          "cost": 0.492613
+        },
+        "briefcase": {
+          "score": 1280.14,
+          "cost": 1.152822
+        },
+        "gdpval": {
+          "score": 1235.17,
+          "cost": 0.213754
+        },
+        "pdf": {
+          "score": 25.6,
+          "cost": 0.764118
+        },
+        "context": {
+          "score": 80.6667,
+          "cost": 0.586582
+        },
+        "scicode": {
+          "score": 58.5648,
+          "cost": 0.026438
+        },
+        "hle": {
+          "score": 48.3318,
+          "cost": 0.028578
+        },
+        "index": {
+          "score": 42.3078,
+          "cost": 0.55118
+        }
+      }
+    },
+    {
+      "model": "claude-opus-5-5",
+      "effort": "medium",
+      "source_label": "Claude Opus 5.5 (Medium, Default Fallback)",
+      "source": "https://artificialanalysis.ai/models/claude-opus-5-5-medium",
+      "observed": "2026-10-06",
+      "fallback": "Default Fallback",
+      "scores": {
+        "terminal": {
+          "score": 52.5253,
+          "cost": 4.042979
+        },
+        "science": {
+          "score": 43.3333,
+          "cost": null
+        },
+        "automation": {
+          "score": 61.2174,
+          "cost": 0.638445
+        },
+        "briefcase": {
+          "score": 1627.67,
+          "cost": 4.39821
+        },
+        "gdpval": {
+          "score": 1586.25,
+          "cost": 0.856427
+        },
+        "pdf": {
+          "score": 25.6,
+          "cost": 0.795318
+        },
+        "context": {
+          "score": 84.3333,
+          "cost": 0.59003
+        },
+        "scicode": {
+          "score": 59.2593,
+          "cost": 0.035471
+        },
+        "hle": {
+          "score": 54.7266,
+          "cost": 0.061941
+        },
+        "index": {
+          "score": 51.2435,
+          "cost": 1.336009
+        }
+      }
+    },
+    {
+      "model": "claude-opus-5-5",
+      "effort": "high",
+      "source_label": "Claude Opus 5.5 (High, Default Fallback)",
+      "source": "https://artificialanalysis.ai/models/claude-opus-5-5-high",
+      "observed": "2026-10-06",
+      "fallback": "Default Fallback",
+      "scores": {
+        "terminal": {
+          "score": 56.5657,
+          "cost": 5.118905
+        },
+        "science": {
+          "score": 49.0476,
+          "cost": null
+        },
+        "automation": {
+          "score": 63.2068,
+          "cost": 0.698612
+        },
+        "briefcase": {
+          "score": 1689.14,
+          "cost": 6.270822
+        },
+        "gdpval": {
+          "score": 1706.88,
+          "cost": 1.542685
+        },
+        "pdf": {
+          "score": 28.8,
+          "cost": 0.825426
+        },
+        "context": {
+          "score": 82.6667,
+          "cost": 0.591782
+        },
+        "scicode": {
+          "score": 60.4167,
+          "cost": 0.040196
+        },
+        "hle": {
+          "score": 55.5607,
+          "cost": 0.103787
+        },
+        "index": {
+          "score": 53.5832,
+          "cost": 1.822505
+        }
+      }
+    },
+    {
+      "model": "claude-opus-5-5",
+      "effort": "xhigh",
+      "source_label": "Claude Opus 5.5 (Xhigh, Default Fallback)",
+      "source": "https://artificialanalysis.ai/models/claude-opus-5-5-xhigh",
+      "observed": "2026-10-06",
+      "fallback": "Default Fallback",
+      "scores": {
+        "terminal": {
+          "score": 59.596,
+          "cost": 8.778356
+        },
+        "science": {
+          "score": 61.9048,
+          "cost": null
+        },
+        "automation": {
+          "score": 64.9528,
+          "cost": 0.878036
+        },
+        "briefcase": {
+          "score": 1767.91,
+          "cost": 12.266186
+        },
+        "gdpval": {
+          "score": 1836.81,
+          "cost": 4.211652
+        },
+        "pdf": {
+          "score": 26.6,
+          "cost": 0.964273
+        },
+        "context": {
+          "score": 84.6667,
+          "cost": 0.598923
+        },
+        "scicode": {
+          "score": 65.0463,
+          "cost": 0.067559
+        },
+        "hle": {
+          "score": 57.507,
+          "cost": 0.240534
+        },
+        "index": {
+          "score": 55.9874,
+          "cost": 3.45911
+        }
+      }
+    },
+    {
+      "model": "claude-opus-5-5",
+      "effort": "max",
+      "source_label": "Claude Opus 5.5 (Max, Default Fallback)",
+      "source": "https://artificialanalysis.ai/models/claude-opus-5-5",
+      "observed": "2026-10-06",
+      "fallback": "Default Fallback",
+      "scores": {
+        "terminal": {
+          "score": 59.596,
+          "cost": 13.109276
+        },
+        "science": {
+          "score": 59.0476,
+          "cost": null
+        },
+        "automation": {
+          "score": 69.5387,
+          "cost": 1.428755
+        },
+        "briefcase": {
+          "score": 1807.11,
+          "cost": 21.045973
+        },
+        "gdpval": {
+          "score": 1866.24,
+          "cost": 8.918387
+        },
+        "pdf": {
+          "score": 26.2,
+          "cost": 1.552335
+        },
+        "context": {
+          "score": 84.6667,
+          "cost": 0.676554
+        },
+        "scicode": {
+          "score": 66.8981,
+          "cost": 0.469116
+        },
+        "hle": {
+          "score": 61.3531,
+          "cost": 0.718406
+        },
+        "index": {
+          "score": 57.6224,
+          "cost": 5.982012
+        }
+      }
+    },
+    {
+      "model": "claude-sonnet-5-5",
+      "effort": "low",
+      "source_label": "Claude Sonnet 5.5 (Low, Default Fallback)",
+      "source": "https://artificialanalysis.ai/models/claude-sonnet-5-5-low",
+      "observed": "2026-10-06",
+      "fallback": "Default Fallback",
+      "scores": {
+        "terminal": {
+          "score": 20.7071,
+          "cost": 1.842688
+        },
+        "science": {
+          "score": 10.4762,
+          "cost": null
+        },
+        "automation": {
+          "score": 49.4209,
+          "cost": 0.2659
+        },
+        "briefcase": {
+          "score": 1272.3,
+          "cost": 0.896516
+        },
+        "gdpval": {
+          "score": 1178.6,
+          "cost": 0.215196
+        },
+        "pdf": {
+          "score": 16.0,
+          "cost": 0.372314
+        },
+        "context": {
+          "score": 76.0,
+          "cost": 0.291432
+        },
+        "scicode": {
+          "score": 49.0741,
+          "cost": 0.012945
+        },
+        "hle": {
+          "score": 36.2373,
+          "cost": 0.012812
+        },
+        "index": {
+          "score": 35.8682,
+          "cost": 0.41697
+        }
+      }
+    },
+    {
+      "model": "claude-sonnet-5-5",
+      "effort": "medium",
+      "source_label": "Claude Sonnet 5.5 (Medium, Default Fallback)",
+      "source": "https://artificialanalysis.ai/models/claude-sonnet-5-5-medium",
+      "observed": "2026-10-06",
+      "fallback": "Default Fallback",
+      "scores": {
+        "terminal": {
+          "score": 29.798,
+          "cost": 2.245186
+        },
+        "science": {
+          "score": 16.1905,
+          "cost": null
+        },
+        "automation": {
+          "score": 54.9096,
+          "cost": 0.289582
+        },
+        "briefcase": {
+          "score": 1442.01,
+          "cost": 1.634938
+        },
+        "gdpval": {
+          "score": 1323.6,
+          "cost": 0.334152
+        },
+        "pdf": {
+          "score": 20.2,
+          "cost": 0.381424
+        },
+        "context": {
+          "score": 76.3333,
+          "cost": 0.291607
+        },
+        "scicode": {
+          "score": 52.8935,
+          "cost": 0.013537
+        },
+        "hle": {
+          "score": 39.8054,
+          "cost": 0.023191
+        },
+        "index": {
+          "score": 40.8387,
+          "cost": 0.589408
+        }
+      }
+    },
+    {
+      "model": "claude-sonnet-5-5",
+      "effort": "high",
+      "source_label": "Claude Sonnet 5.5 (High, Default Fallback)",
+      "source": "https://artificialanalysis.ai/models/claude-sonnet-5-5-high",
+      "observed": "2026-10-06",
+      "fallback": "Default Fallback",
+      "scores": {
+        "terminal": {
+          "score": 43.9394,
+          "cost": 3.064312
+        },
+        "science": {
+          "score": 34.2857,
+          "cost": null
+        },
+        "automation": {
+          "score": 59.4292,
+          "cost": 0.347055
+        },
+        "briefcase": {
+          "score": 1639.45,
+          "cost": 4.189917
+        },
+        "gdpval": {
+          "score": 1550.92,
+          "cost": 0.794751
+        },
+        "pdf": {
+          "score": 25.2,
+          "cost": 0.408601
+        },
+        "context": {
+          "score": 78.0,
+          "cost": 0.293917
+        },
+        "scicode": {
+          "score": 53.7037,
+          "cost": 0.016
+        },
+        "hle": {
+          "score": 45.8295,
+          "cost": 0.047261
+        },
+        "index": {
+          "score": 46.7534,
+          "cost": 1.122484
+        }
+      }
+    },
+    {
+      "model": "claude-sonnet-5-5",
+      "effort": "xhigh",
+      "source_label": "Claude Sonnet 5.5 (Xhigh, Default Fallback)",
+      "source": "https://artificialanalysis.ai/models/claude-sonnet-5-5-xhigh",
+      "observed": "2026-10-06",
+      "fallback": "Default Fallback",
+      "scores": {
+        "terminal": {
+          "score": 57.0707,
+          "cost": 8.869908
+        },
+        "science": {
+          "score": 52.381,
+          "cost": null
+        },
+        "automation": {
+          "score": 65.5203,
+          "cost": 0.470628
+        },
+        "briefcase": {
+          "score": 1751.34,
+          "cost": 9.656112
+        },
+        "gdpval": {
+          "score": 1730.55,
+          "cost": 2.460376
+        },
+        "pdf": {
+          "score": 24.6,
+          "cost": 0.460127
+        },
+        "context": {
+          "score": 79.6667,
+          "cost": 0.296606
+        },
+        "scicode": {
+          "score": 57.2917,
+          "cost": 0.023655
+        },
+        "hle": {
+          "score": 50.0,
+          "cost": 0.117868
+        },
+        "index": {
+          "score": 51.8956,
+          "cost": 2.746197
+        }
+      }
+    },
+    {
+      "model": "claude-sonnet-5-5",
+      "effort": "max",
+      "source_label": "Claude Sonnet 5.5 (Max, Default Fallback)",
+      "source": "https://artificialanalysis.ai/models/claude-sonnet-5-5",
+      "observed": "2026-10-06",
+      "fallback": "Default Fallback",
+      "scores": {
+        "terminal": {
+          "score": 63.6364,
+          "cost": 18.763861
+        },
+        "science": {
+          "score": 53.3333,
+          "cost": null
+        },
+        "automation": {
+          "score": 71.7688,
+          "cost": 1.13752
+        },
+        "briefcase": {
+          "score": 1823.49,
+          "cost": 29.485614
+        },
+        "gdpval": {
+          "score": 1839.1,
+          "cost": 9.209469
+        },
+        "pdf": {
+          "score": 25.8,
+          "cost": 0.794328
+        },
+        "context": {
+          "score": 82.6667,
+          "cost": 0.339301
+        },
+        "scicode": {
+          "score": 60.9954,
+          "cost": 0.27801
+        },
+        "hle": {
+          "score": 54.9583,
+          "cost": 0.543835
+        },
+        "index": {
+          "score": 56.0001,
+          "cost": 7.666776
+        }
+      }
+    },
+    {
+      "model": "claude-opus-5",
+      "effort": "low",
+      "source_label": "Claude Opus 5 (Low)",
+      "source": "https://artificialanalysis.ai/models/claude-opus-5-low",
+      "observed": "2026-10-06",
+      "fallback": "없음",
+      "scores": {
+        "terminal": {
+          "score": 26.2626,
+          "cost": 5.17942
+        },
+        "science": {
+          "score": null,
+          "cost": null
+        },
+        "automation": {
+          "score": 51.7907,
+          "cost": 0.826722
+        },
+        "briefcase": {
+          "score": 1208.77,
+          "cost": 1.781121
+        },
+        "gdpval": {
+          "score": 1304.38,
+          "cost": 0.581728
+        },
+        "pdf": {
+          "score": 17.2,
+          "cost": 0.953975
+        },
+        "context": {
+          "score": 81.3333,
+          "cost": 0.73061
+        },
+        "scicode": {
+          "score": 49.1898,
+          "cost": 0.028708
+        },
+        "hle": {
+          "score": 43.4198,
+          "cost": 0.062514
+        },
+        "index": {
+          "score": 39.3543,
+          "cost": 1.098302
+        }
+      }
+    },
+    {
+      "model": "claude-opus-5",
+      "effort": "medium",
+      "source_label": "Claude Opus 5 (Medium)",
+      "source": "https://artificialanalysis.ai/models/claude-opus-5-medium",
+      "observed": "2026-10-06",
+      "fallback": "없음",
+      "scores": {
+        "terminal": {
+          "score": 34.3434,
+          "cost": 9.182379
+        },
+        "science": {
+          "score": null,
+          "cost": null
+        },
+        "automation": {
+          "score": 54.3393,
+          "cost": 0.952327
+        },
+        "briefcase": {
+          "score": 1435.15,
+          "cost": 5.249235
+        },
+        "gdpval": {
+          "score": 1491.91,
+          "cost": 1.364099
+        },
+        "pdf": {
+          "score": 20.0,
+          "cost": 0.992972
+        },
+        "context": {
+          "score": 82.0,
+          "cost": 0.737751
+        },
+        "scicode": {
+          "score": 51.5046,
+          "cost": 0.036928
+        },
+        "hle": {
+          "score": 51.2975,
+          "cost": 0.186956
+        },
+        "index": {
+          "score": 44.8253,
+          "cost": 2.189479
+        }
+      }
+    },
+    {
+      "model": "claude-opus-5",
+      "effort": "high",
+      "source_label": "Claude Opus 5 (High)",
+      "source": "https://artificialanalysis.ai/models/claude-opus-5-high",
+      "observed": "2026-10-06",
+      "fallback": "없음",
+      "scores": {
+        "terminal": {
+          "score": 45.9596,
+          "cost": 13.140067
+        },
+        "science": {
+          "score": null,
+          "cost": null
+        },
+        "automation": {
+          "score": 53.564,
+          "cost": 1.070817
+        },
+        "briefcase": {
+          "score": 1561.87,
+          "cost": 10.409202
+        },
+        "gdpval": {
+          "score": 1595.87,
+          "cost": 3.027145
+        },
+        "pdf": {
+          "score": 19.6,
+          "cost": 1.034675
+        },
+        "context": {
+          "score": 79.0,
+          "cost": 0.745553
+        },
+        "scicode": {
+          "score": 55.4398,
+          "cost": 0.048084
+        },
+        "hle": {
+          "score": 52.8267,
+          "cost": 0.352091
+        },
+        "index": {
+          "score": 48.1219,
+          "cost": 3.613267
+        }
+      }
+    },
+    {
+      "model": "claude-opus-5",
+      "effort": "xhigh",
+      "source_label": "Claude Opus 5 (Xhigh)",
+      "source": "https://artificialanalysis.ai/models/claude-opus-5-xhigh",
+      "observed": "2026-10-06",
+      "fallback": "없음",
+      "scores": {
+        "terminal": {
+          "score": 46.4646,
+          "cost": 17.353944
+        },
+        "science": {
+          "score": null,
+          "cost": null
+        },
+        "automation": {
+          "score": 53.2192,
+          "cost": 1.154175
+        },
+        "briefcase": {
+          "score": 1636.03,
+          "cost": 14.261253
+        },
+        "gdpval": {
+          "score": 1692.43,
+          "cost": 4.962977
+        },
+        "pdf": {
+          "score": 21.0,
+          "cost": 1.047183
+        },
+        "context": {
+          "score": 80.3333,
+          "cost": 0.752881
+        },
+        "scicode": {
+          "score": 55.6713,
+          "cost": 0.072277
+        },
+        "hle": {
+          "score": 54.4022,
+          "cost": 0.517075
+        },
+        "index": {
+          "score": 49.6774,
+          "cost": 4.877844
+        }
+      }
+    },
+    {
+      "model": "claude-opus-5",
+      "effort": "max",
+      "source_label": "Claude Opus 5 (Max)",
+      "source": "https://artificialanalysis.ai/models/claude-opus-5",
+      "observed": "2026-10-06",
+      "fallback": "없음",
+      "scores": {
+        "terminal": {
+          "score": 48.9899,
+          "cost": 19.2891
+        },
+        "science": {
+          "score": 28.5714,
+          "cost": null
+        },
+        "automation": {
+          "score": 56.5736,
+          "cost": 1.316041
+        },
+        "briefcase": {
+          "score": 1661.62,
+          "cost": 17.793315
+        },
+        "gdpval": {
+          "score": 1723.87,
+          "cost": 6.766012
+        },
+        "pdf": {
+          "score": 21.6,
+          "cost": 1.08567
+        },
+        "context": {
+          "score": 79.3333,
+          "cost": 0.761113
+        },
+        "scicode": {
+          "score": 56.3657,
+          "cost": 0.117713
+        },
+        "hle": {
+          "score": 54.8656,
+          "cost": 0.673553
+        },
+        "index": {
+          "score": 50.7771,
+          "cost": 5.858396
+        }
+      }
+    },
+    {
+      "model": "claude-sonnet-5",
+      "effort": "low",
+      "source_label": "Claude Sonnet 5 (Low)",
+      "source": "https://artificialanalysis.ai/models/claude-sonnet-5-low",
+      "observed": "2026-10-06",
+      "fallback": "없음",
+      "scores": {
+        "terminal": {
+          "score": 2.5253,
+          "cost": 2.664186
+        },
+        "science": {
+          "score": null,
+          "cost": null
+        },
+        "automation": {
+          "score": 19.9019,
+          "cost": 0.304675
+        },
+        "briefcase": {
+          "score": 926.1,
+          "cost": 0.817469
+        },
+        "gdpval": {
+          "score": 1070.53,
+          "cost": 0.260015
+        },
+        "pdf": {
+          "score": 9.4,
+          "cost": 0.366681
+        },
+        "context": {
+          "score": 67.3333,
+          "cost": 0.291747
+        },
+        "scicode": {
+          "score": 50.1157,
+          "cost": 0.013203
+        },
+        "hle": {
+          "score": 21.9184,
+          "cost": 0.025594
+        },
+        "index": {
+          "score": 24.2638,
+          "cost": 0.508755
+        }
+      }
+    },
+    {
+      "model": "claude-sonnet-5",
+      "effort": "medium",
+      "source_label": "Claude Sonnet 5 (Medium)",
+      "source": "https://artificialanalysis.ai/models/claude-sonnet-5-medium",
+      "observed": "2026-10-06",
+      "fallback": "없음",
+      "scores": {
+        "terminal": {
+          "score": 2.0202,
+          "cost": 5.533321
+        },
+        "science": {
+          "score": null,
+          "cost": null
+        },
+        "automation": {
+          "score": 27.8722,
+          "cost": 0.431124
+        },
+        "briefcase": {
+          "score": 1056.83,
+          "cost": 1.732243
+        },
+        "gdpval": {
+          "score": 1160.38,
+          "cost": 0.528685
+        },
+        "pdf": {
+          "score": 11.6,
+          "cost": 0.395053
+        },
+        "context": {
+          "score": 73.6667,
+          "cost": 0.295519
+        },
+        "scicode": {
+          "score": 51.6204,
+          "cost": 0.017142
+        },
+        "hle": {
+          "score": 29.9815,
+          "cost": 0.084663
+        },
+        "index": {
+          "score": 28.0531,
+          "cost": 0.999106
+        }
+      }
+    },
+    {
+      "model": "claude-sonnet-5",
+      "effort": "high",
+      "source_label": "Claude Sonnet 5 (High)",
+      "source": "https://artificialanalysis.ai/models/claude-sonnet-5-high",
+      "observed": "2026-10-06",
+      "fallback": "없음",
+      "scores": {
+        "terminal": {
+          "score": 5.0505,
+          "cost": 9.401019
+        },
+        "science": {
+          "score": null,
+          "cost": null
+        },
+        "automation": {
+          "score": 32.0966,
+          "cost": 0.573035
+        },
+        "briefcase": {
+          "score": 1175.99,
+          "cost": 3.764689
+        },
+        "gdpval": {
+          "score": 1257.77,
+          "cost": 1.017455
+        },
+        "pdf": {
+          "score": 9.4,
+          "cost": 0.41982
+        },
+        "context": {
+          "score": 76.6667,
+          "cost": 0.302286
+        },
+        "scicode": {
+          "score": 54.2824,
+          "cost": 0.025495
+        },
+        "hle": {
+          "score": 35.7275,
+          "cost": 0.173956
+        },
+        "index": {
+          "score": 31.6623,
+          "cost": 1.792469
+        }
+      }
+    },
+    {
+      "model": "claude-sonnet-5",
+      "effort": "xhigh",
+      "source_label": "Claude Sonnet 5 (Xhigh)",
+      "source": "https://artificialanalysis.ai/models/claude-sonnet-5-xhigh",
+      "observed": "2026-10-06",
+      "fallback": "없음",
+      "scores": {
+        "terminal": {
+          "score": 7.0707,
+          "cost": 12.798872
+        },
+        "science": {
+          "score": null,
+          "cost": null
+        },
+        "automation": {
+          "score": 34.4763,
+          "cost": 0.715476
+        },
+        "briefcase": {
+          "score": 1272.9,
+          "cost": 7.557158
+        },
+        "gdpval": {
+          "score": 1361.99,
+          "cost": 2.141864
+        },
+        "pdf": {
+          "score": 12.6,
+          "cost": 0.445254
+        },
+        "context": {
+          "score": 76.6667,
+          "cost": 0.315952
+        },
+        "scicode": {
+          "score": 54.0509,
+          "cost": 0.039867
+        },
+        "hle": {
+          "score": 39.0176,
+          "cost": 0.271944
+        },
+        "index": {
+          "score": 34.3842,
+          "cost": 2.872044
+        }
+      }
+    },
+    {
+      "model": "claude-sonnet-5",
+      "effort": "max",
+      "source_label": "Claude Sonnet 5 (Max)",
+      "source": "https://artificialanalysis.ai/models/claude-sonnet-5",
+      "observed": "2026-10-06",
+      "fallback": "없음",
+      "scores": {
+        "terminal": {
+          "score": 14.1414,
+          "cost": 19.69418
+        },
+        "science": {
+          "score": null,
+          "cost": null
+        },
+        "automation": {
+          "score": 36.5127,
+          "cost": 1.001476
+        },
+        "briefcase": {
+          "score": 1358,
+          "cost": 14.429176
+        },
+        "gdpval": {
+          "score": 1465.08,
+          "cost": 4.703914
+        },
+        "pdf": {
+          "score": 13.2,
+          "cost": 0.615306
+        },
+        "context": {
+          "score": 82.0,
+          "cost": 0.36794
+        },
+        "scicode": {
+          "score": 54.2824,
+          "cost": 0.191664
+        },
+        "hle": {
+          "score": 41.2882,
+          "cost": 1.020805
+        },
+        "index": {
+          "score": 38.1639,
+          "cost": 5.091164
+        }
+      }
+    }
+  ],
+  "historical": [
+    {
+      "benchmark": {
+        "id": "swe-bench-pro-v2-full",
+        "name": "SWE-Bench Pro V2 Full",
+        "metric": "문제 해결률",
+        "unit": "%",
+        "source": "https://labs.scale.com/leaderboard/swe_bench_pro_public_v2?tab=full",
+        "description": "실제 소프트웨어 저장소의 이슈를 해결하는 평가. 아래 점수는 공개 리더보드의 동일 탭에서 확인한 스냅샷이다."
+      },
+      "results": [
+        {
+          "agent": "Claude Code",
+          "model": "Opus 5",
+          "effort": "xhigh",
+          "score": 99.4,
+          "uncertainty": "±0.40",
+          "source": "https://labs.scale.com/leaderboard/swe_bench_pro_public_v2?tab=full",
+          "observed": "2026-09-30"
+        },
+        {
+          "agent": "Codex",
+          "model": "GPT-6 Astra",
+          "effort": "high",
+          "score": 96.9,
+          "uncertainty": "±1.10",
+          "source": "https://labs.scale.com/leaderboard/swe_bench_pro_public_v2?tab=full",
+          "observed": "2026-09-30"
+        },
+        {
+          "agent": "mini-swe-agent",
+          "model": "Gemini 3.8 Flash",
+          "effort": "high",
+          "score": 94.86,
+          "uncertainty": "±1.46",
+          "source": "https://labs.scale.com/leaderboard/swe_bench_pro_public_v2?tab=full",
+          "observed": "2026-09-30"
+        }
+      ],
+      "note": "2026-09-30에 확인한 기존 기록. 이번 갱신에서는 리더보드의 해당 점수 행을 재확인하지 못해 최신 비교에서 제외했다."
     }
   ],
   "history": [
     {
       "date": "2026-09-30",
       "summary": "SWE-Bench Pro V2 Full 공개 스냅샷 추가. Jev는 성격이 달라 별도 추적."
+    },
+    {
+      "date": "2026-10-06",
+      "summary": "Claude·Codex 9개 모델 계열 × 5개 effort의 AA 공개 결과를 확인. 벤치마크별 점수·API 작업당 비용·fallback 조건을 기록."
     }
   ]
 }
