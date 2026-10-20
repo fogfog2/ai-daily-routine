@@ -73,9 +73,13 @@ def main() -> None:
         return
 
     days = []
+    checked_dates = []
     for p in sorted(ARCHIVE.glob("*.md"), reverse=True):
         if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", p.stem):
             continue
+        checked = re.search(r"^> 확인일: (\d{4}-\d{2}-\d{2})$", p.read_text(encoding="utf-8"), re.M)
+        if checked:
+            checked_dates.append(checked.group(1))
         items = parse_day(p)
         if not items:          # 뼈대만 있고 내용이 없는 날은 싣지 않는다
             continue
@@ -86,6 +90,7 @@ def main() -> None:
     OUT.write_text(
         json.dumps({
             "note": "archive/*.md 가 단일 출처 — 이 파일을 직접 편집하지 말 것.",
+            "checked_at": max(checked_dates) if checked_dates else None,
             "days": days,
         }, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8")
