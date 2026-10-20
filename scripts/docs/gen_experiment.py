@@ -226,6 +226,13 @@ BODY = r"""
       <strong>재현할 수 없는 개선은 개선이 아니다</strong> — 우연과 구분되지 않기 때문이다.
       화려한 도구가 필요한 것은 아니고, 설정과 결과를 짝지어 남기는 습관이 대부분을 해결한다.
     </p>
+
+<p><strong>2026-10-20 — 실험자가 에이전트일 때.</strong>
+<a href="durable-research-agents.html">Meta REA·AReaL-RSI와 장기 실행</a>에서는
+job ID, 처리한 이벤트, 남은 예산, 가설의 적용 조건과 절차 버전도 추적한다.
+가중치를 바꾸지 않고 스킬·기억을 개정한 결과를 모델 학습 효과로 섞지 않는다.
+<a href="rea-reverse-engineering.html">역공학 REA의 근거 관리</a>에서는 파일 해시와 분석 도구 버전을 함께 고정한다.
+재사용한 분석 결과와 새 실행 시험은 서로 다른 기록이다.</p>
   </section>
 """
 
@@ -260,5 +267,5 @@ write(
     reading=READING,
     light=LIGHT,
     dark=DARK,
-    date="2026-08-11",
+    date="2026-10-20",
 )

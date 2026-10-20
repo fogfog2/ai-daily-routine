@@ -213,6 +213,20 @@ BODY = r"""
       <a href="ai-agents-tool-use.html">에이전트 설계</a>에서 되돌릴 수 있는 작업과
       되돌릴 수 없는 작업을 가르는 것이 왜 출발점인지가 여기서 다시 확인된다.
     </p>
+
+<div class="note"><b>2026-10-20 — Resolve–Express–Act(REA).</b>
+10월 12일 프리프린트 <a href="https://arxiv.org/abs/2610.17473">REA: From Correct LLM Judgments to Safe Decision Delivery</a>는
+모델 판단, 출력에서의 판정 추출, 파싱 실패 시 fallback에 따른 실제 행동을 분리한다.
+올바른 차단 판단도 파싱 실패를 허용으로 바꾸는 fail-open 정책에서는 유실될 수 있다.
+논문의 95.5% → 0%는 고정된 응답을 재생한 해당 실험에서
+<em>올바르게 유해하다고 판단했는데도 허용된 요청의 비율</em>이며 전체 유해 요청 비율이 아니다.
+이 REA는 <a href="rea-reverse-engineering.html">역공학 도구 REA</a>와 별도 연구다.</div>
+<p>모델 판정 정확도, 소비자가 판정을 읽는 비율, 최종 허용·차단 행동을 각각 기록한다.
+논문은 모델 판단이 맞는 조건에서의 계약 준수율을 κ로 구분한다.
+판정 정확도가 A라면 올바르고 실행 가능한 결정의 비율은 Aκ다.
+설명용 가정에서 A=0.9, κ=0.8이면 0.72다. 이 문서의 계산 예시이며 논문 실측값이 아니다.
+파싱 실패를 모두 차단하면 안전한 요청까지 차단하는 비용이 생기므로 복구·재시도·검토 경로와 함께 평가한다.
+<a href="durable-research-agents.html">장기 실행 에이전트</a>에서는 출력 계약을 재개·권한·결과 채택에도 적용한다.</p>
   </section>
 """
 
@@ -248,5 +262,5 @@ write(
     reading=READING,
     light=LIGHT,
     dark=DARK,
-    date="2026-08-10",
+    date="2026-10-20",
 )

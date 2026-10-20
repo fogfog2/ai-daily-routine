@@ -236,6 +236,13 @@ BODY = r"""
       되돌릴 수 있는 작업과 되돌릴 수 없는 작업을 가르는 선이,
       자동화해도 되는 것과 승인을 받아야 하는 것의 경계가 된다.
     </p>
+
+<div class="note"><b>2026-10-20 — 근거 도구와 장기 실행.</b>
+<a href="rea-reverse-engineering.html">REA</a>는 바이너리·앱 조사 도구를 MCP로 연결해 관측 범위를 넓힌다.
+모델 학습이나 원본 소스 복원 보장과 구분한다.
+여러 날의 실험은 <a href="durable-research-agents.html">장기 실행 연구 에이전트</a>에서
+상태 저장·불확실한 제출·조건부 기억·전체 비용을 나누어 설명한다.
+문맥 격리가 파일·권한 격리를 뜻하지 않으므로 작업자별 출력 범위를 명시한다.</div>
   </section>
 """
 
@@ -271,5 +278,5 @@ write(
     reading=READING,
     light=LIGHT,
     dark=DARK,
-    date="2026-08-10",
+    date="2026-10-20",
 )
