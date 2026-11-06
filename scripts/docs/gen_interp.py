@@ -252,7 +252,8 @@ BODY = r"""
       다만 그것은 <em>거대한 프로그램의 몇 줄을 읽어낸 것</em>에 가깝고,
       전체를 이해하는 것과는 아직 거리가 멀다.
     </p>
-  </section>
+  <p>LLM이 가중치에서 행동을 읽고 직접 수정하는 초기 연구는 <a href="weight-space-programming.html">Weight-Space Programming</a>에서 다룬다. 가중치만 본 식별과 어텐션 관측을 허용한 실험의 차이, 실제 개입 뒤의 검증을 함께 살펴본다.</p>
+</section>
 """
 
 READING = [

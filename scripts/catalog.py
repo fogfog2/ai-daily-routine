@@ -225,6 +225,9 @@ DOCS = [
      "", "curriculum-data-quality", "train",
      "중복 제거와 필터링이 파라미터를 늘리는 것보다 싸게 먹히는 구간.", "2026-08-10", ["common", "training"]),
 
+    ("Weight-Space Programming", "LLM이 신경망 가중치를 읽고 고친다",
+     "", "weight-space-programming", "align",
+     "직접 가중치 편집의 원리, Qwen 반복 억제 사례와 평가 한계, 선형 예제.", "2026-11-06", ["common", "alignment", "training", "efficiency"]),
     ("LoRA", "얼린 가중치 옆에 샛길을 내다",
      "dfdb6442-a674-4514-8fd7-9347669eca80", "lora", "align",
      "ΔW를 저랭크로 쪼개 학습 파라미터를 0.06%로 줄이는 법.", "2026-08-07", ["common", "alignment", "efficiency"]),

@@ -226,7 +226,8 @@ BODY = r"""
       그 관찰이 맞았기 때문에, 0.4%만 학습해도 되고, 병합하면 공짜가 되고,
       수십 MB짜리 파일로 모델의 성격을 바꿔 끼울 수 있게 됐다.
     </p>
-  </section>
+  <p>가중치 변화량을 데이터와 경사로 학습하는 LoRA와 달리, <a href="weight-space-programming.html">Weight-Space Programming</a>은 범용 LLM이 직접 텐서 편집안을 구성한다. 변화량이 작거나 저랭크여도 같은 학습 절차라는 뜻은 아니다.</p>
+</section>
 """
 
 READING = [
