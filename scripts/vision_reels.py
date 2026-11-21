@@ -7,6 +7,17 @@ from pathlib import Path
 
 STUDIO = Path(__file__).parent / "vision-reels"
 EPISODES = {
+    "detr-lineage": [
+        (
+            "rt-detr-v4",
+            "RT-DETRv4",
+            "같은 입력이 학습과 추론에서 지나는 경로를 비교하세요.",
+            [
+                ("학습", "교사 DINOv3의 가중치를 고정하고, 같은 위치의 학생 특징이 교사 특징과 정렬되도록 학습합니다."),
+                ("추론", "학습한 학생 검출기가 입력 영상에서 상자와 클래스를 예측합니다. 교사와 특징 정렬 가지는 학습 단계에서만 사용합니다."),
+            ],
+        )
+    ],
     "depth-estimation": [
         (
             "endoda3",

@@ -7,8 +7,10 @@ import sr from './mobile-int8-sr.json';
 
 import loma from './loma.json';
 import stream from './endostreamdepth.json';
-const episodes = [depth, atto, sr, loma, stream];
+import rtv4 from './rt-detr-v4.json';
+const episodes = [depth, atto, sr, loma, stream, rtv4];
 const labels = {
+  'rt-detr-v4': 'RT-DETRv4',
   loma: 'LoMa',
   endostreamdepth: 'EndoStreamDepth',
   endoda3: 'EndoDA3',
@@ -16,6 +18,13 @@ const labels = {
   'mobile-int8-sr': 'Mobile INT8 SR',
 };
 const notes = {
+  teacherpath: ['학습 전용 증류 경로', '같은 입력에서 학습과 추론의 경로를 따라갑니다.'],
+  patchalignment: ['Lᴅꜱɪ = −mean(cos θ)', '같은 위치에서 학생과 교사의 특징 방향을 맞춥니다.'],
+  gradientband: ['GAM · 에폭마다 λ 갱신', '전체 손실에서 얻은 모듈별 기울기 L1 노름을 사용합니다.'],
+  distillationresult: [
+    '52.1 → 52.3 → 52.6 AP',
+    '동일한 학생 검출기에 학습 조건을 하나씩 추가한 결과입니다.',
+  ],
   windows: ['반복 구조와 대응의 모호성', '비슷한 패치가 두 개일 때 주변 구조를 함께 봅니다.'],
   descriptors: ['DaD → 기술자 → 매처', '기술자를 학습한 뒤 고정하고 매처를 학습합니다.'],
   epipolar: ['PCK(τ) · 허용 오차 안의 비율', '추정한 F를 사람이 표시한 정답 대응에서 평가합니다.'],
@@ -124,12 +133,26 @@ function Movie({ episode, cues }) {
         }}
       >
         <text x="25" y="47" fontSize="17" fontFamily={fixed} fill={C.muted}>
-          {['ablation', 'results', 'timer', 'frontier', 'streambench'].includes(scene.id)
+          {[
+            'ablation',
+            'results',
+            'timer',
+            'frontier',
+            'streambench',
+            'distillationresult',
+          ].includes(scene.id)
             ? 'REPORTED MEASUREMENT'
             : 'SCHEMATIC'}
         </text>
         <text x="632" textAnchor="end" y="47" fontSize="18" fill={C.muted}>
-          {['ablation', 'results', 'timer', 'frontier', 'streambench'].includes(scene.id)
+          {[
+            'ablation',
+            'results',
+            'timer',
+            'frontier',
+            'streambench',
+            'distillationresult',
+          ].includes(scene.id)
             ? '원문 보고값'
             : '설명용 예시'}
         </text>

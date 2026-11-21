@@ -680,9 +680,225 @@ function Train({ step, p }) {
     </g>
   );
 }
+function DetectorPath({ train = 1, progress = 0.55 }) {
+  const pulse = (progress * 3) % 1;
+  const moving = (x1, y1, x2, y2, color) => (
+    <circle cx={mix(x1, x2, pulse)} cy={mix(y1, y2, pulse)} r="6" fill={color} />
+  );
+  return (
+    <g>
+      <Txt x={28} y={111} size={22} fill={train > 0.5 ? C.gold : C.mint}>
+        {train > 0.5 ? '학습 · 같은 입력을 두 모델에 전달' : '추론 · 학생 검출기 실행'}
+      </Txt>
+      <Box x={27} y={213} w={116} h={94} />
+      <path d="M38 286l91-9" stroke={C.line} strokeWidth="5" />
+      <g transform={`translate(${55 + 10 * pulse} 231)`}>
+        <path d="M0 10L23 3L43 11L20 19Z" fill="#e3ba8d" />
+        <path d="M0 10L20 19V47L0 39Z" fill="#ac835c" />
+        <path d="M20 19L43 11V39L20 47Z" fill="#cc996b" />
+      </g>
+      <g opacity={train}>
+        <Wire x1={144} y1={247} x2={234} y2={182} color={C.gold} />
+        {moving(144, 247, 234, 182, C.gold)}
+        <Box x={235} y={148} w={200} h={67} stroke={C.gold} />
+        <Txt x={335} y={190} anchor="middle" size={23}>
+          DINOv3 · 고정
+        </Txt>
+        <Wire x1={435} y1={180} x2={493} y2={221} color={C.gold} />
+        {moving(435, 180, 493, 221, C.gold)}
+        <Box x={495} y={194} w={138} h={60} stroke={C.gold} />
+        <Txt x={564} y={232} size={22} anchor="middle">
+          특징 정렬
+        </Txt>
+        <Wire x1={401} y1={299} x2={495} y2={241} color={C.mint} dash />
+        {moving(401, 299, 495, 241, C.mint)}
+      </g>
+      <Wire x1={143} y1={278} x2={237} y2={331} color={C.mint} />
+      {moving(143, 278, 237, 331, C.mint)}
+      <Box x={237} y={300} w={198} h={65} stroke={C.mint} />
+      <Txt x={336} y={340} anchor="middle">
+        학생 검출기
+      </Txt>
+      <Wire x1={435} y1={332} x2={483} y2={332} color={C.mint} />
+      {moving(435, 332, 483, 332, C.mint)}
+      <Box x={485} y={300} w={148} h={65} stroke={C.mint} />
+      <Txt x={559} y={340} anchor="middle" size={21}>
+        상자 · 클래스
+      </Txt>
+      <Txt x={28} y={445} fill={C.muted} size={22}>
+        {train > 0.5 ? '검출 손실 + λ × 특징 정렬 손실' : '검출기에 학습된 가중치 사용'}
+      </Txt>
+    </g>
+  );
+}
+function FeatureGrid({ idx, p }) {
+  const vectors = idx >= 3;
+  const theta = idx === 3 ? Math.PI / 3 : idx === 4 ? ((1 - p) * Math.PI) / 3 : 0;
+  return (
+    <g>
+      <Txt x={27} y={117} size={22} fill={C.muted}>
+        {vectors ? '같은 공간 위치 · 벡터 방향 비교' : '해상도와 채널 축 맞추기'}
+      </Txt>
+      {vectors ? (
+        <g>
+          <path d="M98 340H399 M142 368V155" fill="none" stroke={C.line} strokeWidth="2" />
+          <Wire x1={142} y1={340} x2={335} y2={340} color={C.gold} width={5} />
+          <Wire
+            x1={142}
+            y1={340}
+            x2={142 + 161 * Math.cos(theta)}
+            y2={340 - 161 * Math.sin(theta)}
+            color={C.mint}
+            width={5}
+          />
+          <Dot x={335} y={340} color={C.gold} />
+          <Dot x={142 + 161 * Math.cos(theta)} y={340 - 161 * Math.sin(theta)} />
+          <Txt x={410} y={237} fill={C.gold}>
+            ● 교사
+          </Txt>
+          <Txt x={410} y={281} fill={C.mint}>
+            ● 학생
+          </Txt>
+          <Txt x={34} y={441} size={28} mono fill={C.mint}>
+            cos({Math.round((theta * 180) / Math.PI)}°) = {Math.cos(theta).toFixed(2)}
+          </Txt>
+        </g>
+      ) : (
+        <g>
+          {[0, 1].map((side) => {
+            const n = side === 0 && idx === 0 ? 6 : 4;
+            const x = side ? 389 : 69;
+            const size = 161 / n;
+            return (
+              <g key={side}>
+                {seq(n * n).map((k) => {
+                  const row = Math.floor(k / n),
+                    col = k % n;
+                  return (
+                    <rect
+                      key={k}
+                      x={x + col * size}
+                      y={159 + row * size}
+                      width={size - 3}
+                      height={size - 3}
+                      rx="2"
+                      fill={
+                        row === 1 && col === 2
+                          ? side
+                            ? C.mint
+                            : C.gold
+                          : ['#234447', '#335453', '#385d62'][(row + col) % 3]
+                      }
+                    />
+                  );
+                })}
+                <Txt x={x + 80} y={362} anchor="middle" size={22}>
+                  {side ? '학생 F₅' : '교사 패치'}
+                </Txt>
+              </g>
+            );
+          })}
+          <Packet a={246} b={369} y={238} u={p} />
+          <Txt x={30} y={443} size={23} fill={C.mint}>
+            {idx < 2 ? '교사 격자 → 학생 해상도로 보간' : '학생 특징 → 교사의 채널 차원으로 투영'}
+          </Txt>
+        </g>
+      )}
+    </g>
+  );
+}
+function GradientBand({ idx, p }) {
+  const low = 1.9,
+    high = 2.1;
+  const value = idx < 4 ? 2 + 0.13 * Math.sin(p * Math.PI * 2) : idx === 4 ? 1.5 : mix(2, 2.4, p);
+  const x = (v) => 70 + (v - 1.3) * 420;
+  const factor = value < low ? high / value : value > high ? low / value : 1;
+  return (
+    <g>
+      <Txt x={26} y={122} size={22} fill={C.muted}>
+        대상 모듈의 기울기 비율 · 에폭 평균
+      </Txt>
+      <rect x={x(low)} y={204} width={x(high) - x(low)} height={99} fill="#29564c" />
+      <path d="M60 270H616" stroke={C.line} strokeWidth="4" />
+      {[1.5, 1.9, 2.1, 2.5].map((v) => (
+        <g key={v}>
+          <Wire x1={x(v)} y1={252} x2={x(v)} y2={283} color={C.muted} />
+          <Txt x={x(v)} y={335} anchor="middle" mono size={19}>
+            {v}%
+          </Txt>
+        </g>
+      ))}
+      <Txt x={x(value)} y={186} anchor="middle" size={23} fill={C.gold}>
+        {value.toFixed(2)}%
+      </Txt>
+      <path d={`M${x(value) - 9} 198h18l-9 15Z`} fill={C.gold} />
+      <Dot x={x(value)} y={245} color={C.gold} />
+      <Txt x={32} y={429} size={25} fill={C.mint}>
+        {idx < 4 ? '목표 2.0% · 허용 폭 ±0.1%p' : `다음 λ = 현재 λ × ${factor.toFixed(2)}`}
+      </Txt>
+    </g>
+  );
+}
+function DistillationResults({ idx, p }) {
+  const rows = [
+    ['기본', '52.1', '56.7'],
+    ['+ DSI', '52.3', '56.4'],
+    ['+ DSI + GAM', '52.6', '56.8'],
+  ];
+  const active = idx === 0 ? 0 : idx === 1 ? Math.min(2, Math.floor(p * 3)) : idx === 2 ? 1 : 2;
+  return (
+    <g>
+      <Txt x={25} y={113} size={22} fill={C.muted}>
+        RT-DETRv2-L · COCO 검증 · 표 2
+      </Txt>
+      <Txt x={375} y={171} mono size={23}>
+        AP
+      </Txt>
+      <Txt x={508} y={171} mono size={23}>
+        AP75
+      </Txt>
+      {rows.map(([label, a, b], i) => {
+        const y = 191 + i * 67;
+        return (
+          <g key={label}>
+            <Box
+              x={24}
+              y={y}
+              w={607}
+              h={53}
+              stroke={active === i ? C.mint : C.line}
+              fill={active === i ? '#2c4d4a' : C.panel}
+            />
+            <Txt x={44} y={y + 35} size={24}>
+              {label}
+            </Txt>
+            <Txt x={375} y={y + 35} mono size={24}>
+              {a}
+            </Txt>
+            <Txt x={508} y={y + 35} mono size={24} fill={idx >= 2 ? C.gold : C.white}>
+              {b}
+            </Txt>
+          </g>
+        );
+      })}
+      <Txt x={28} y={448} size={22} fill={C.muted}>
+        AP75 · 상자 겹침 기준 IoU 0.75
+      </Txt>
+    </g>
+  );
+}
+
 export function Diagram({ scene, idx = 0, phase = 0.6, scenePhase = 0.5 }) {
   const p = smooth(phase);
   switch (scene) {
+    case 'teacherpath':
+      return <DetectorPath train={idx < 3 ? 1 : 1 - ramp(phase, 0, 0.4)} progress={scenePhase} />;
+    case 'patchalignment':
+      return <FeatureGrid idx={idx} p={p} />;
+    case 'gradientband':
+      return <GradientBand idx={idx} p={p} />;
+    case 'distillationresult':
+      return <DistillationResults idx={idx} p={p} />;
     case 'motion':
       return <Scope movement={ramp(scenePhase, 0.12, 0.76)} />;
     case 'warp':
@@ -751,6 +967,7 @@ export function Demo({ id, second }) {
         {second && <path d="M31 388V415H619V388" fill="none" stroke={C.gold} strokeWidth="5" />}
       </>
     );
+  else if (id === 'rt-detr-v4') image = <DetectorPath train={second ? 0 : 1} />;
   else if (id === 'loma') image = <Epipolar threshold={second ? 7 : 2} />;
   else if (id === 'endostreamdepth') image = <Trace history={second} />;
   else image = <Round step={0} p={1} example={second} />;
