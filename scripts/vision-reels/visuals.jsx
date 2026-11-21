@@ -1,4 +1,5 @@
 import React from 'react';
+import { NextScene, Epipolar, Trace } from './next-scenes';
 import lumen from './art/lumen.jpg';
 
 export const C = {
@@ -737,7 +738,7 @@ export function Diagram({ scene, idx = 0, phase = 0.6, scenePhase = 0.5 }) {
     case 'results':
       return <Results sr step={idx} p={p} />;
     default:
-      throw Error('Unknown scene ' + scene);
+      return <NextScene scene={scene} idx={idx} phase={phase} total={scenePhase} />;
   }
 }
 export function Demo({ id, second }) {
@@ -750,6 +751,8 @@ export function Demo({ id, second }) {
         {second && <path d="M31 388V415H619V388" fill="none" stroke={C.gold} strokeWidth="5" />}
       </>
     );
+  else if (id === 'loma') image = <Epipolar threshold={second ? 7 : 2} />;
+  else if (id === 'endostreamdepth') image = <Trace history={second} />;
   else image = <Round step={0} p={1} example={second} />;
   return (
     <svg width="660" height="430" viewBox="0 65 660 430" style={{ background: C.panel }}>

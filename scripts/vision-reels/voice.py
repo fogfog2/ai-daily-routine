@@ -12,6 +12,18 @@ from supertonic import TTS
 
 HERE = Path(__file__).resolve().parent
 TERMS = {
+    "엔도스트림뎁스": "EndoStreamDepth",
+    "플래시뎁스": "FlashDepth",
+    "씨쓰리브이디": "C3VD",
+    "엔비디아 알티엑스 에이 육천": "NVIDIA RTX A6000",
+    "다드 검출기": "DaD 검출기",
+    "로마는": "LoMa는",
+    "하드매치": "HardMatch",
+    "맘바": "Mamba",
+    "스케일 이는": "스케일 2는",
+    "사십 점 이 밀리초": "40.2ms",
+    "사십 점 칠 밀리초": "40.7ms",
+    "오백십팔 제곱": "518×518",
     "영 점 공팔팔": "0.088",
     "영 점 오삼팔": "0.538",
     "영 점 삼칠육": "0.376",

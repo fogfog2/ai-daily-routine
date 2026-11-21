@@ -5,13 +5,25 @@ import depth from './endoda3.json';
 import atto from './rf-detr-atto.json';
 import sr from './mobile-int8-sr.json';
 
-const episodes = [depth, atto, sr];
+import loma from './loma.json';
+import stream from './endostreamdepth.json';
+const episodes = [depth, atto, sr, loma, stream];
 const labels = {
+  loma: 'LoMa',
+  endostreamdepth: 'EndoStreamDepth',
   endoda3: 'EndoDA3',
   'rf-detr-atto': 'RF-DETR Atto',
   'mobile-int8-sr': 'Mobile INT8 SR',
 };
 const notes = {
+  windows: ['반복 구조와 대응의 모호성', '비슷한 패치가 두 개일 때 주변 구조를 함께 봅니다.'],
+  descriptors: ['DaD → 기술자 → 매처', '기술자를 학습한 뒤 고정하고 매처를 학습합니다.'],
+  epipolar: ['PCK(τ) · 허용 오차 안의 비율', '추정한 F를 사람이 표시한 정답 대응에서 평가합니다.'],
+  posemetric: ['카메라 상대 자세', '픽셀 오차와 회전·이동 방향의 각도 오차를 비교합니다.'],
+  depthtrack: ['프레임별 깊이 추정', '합성 궤적에서 실제 접근 추세와 흔들림을 함께 봅니다.'],
+  streamstate: ['현재 특징 + 이전 상태', '각 블록의 은닉 상태가 다음 시점으로 전달됩니다.'],
+  scaletrack: ['σ = std(s₁, …, sₜ)', '프레임별 최적 깊이 스케일의 표준편차입니다.'],
+  streambench: ['C3VD · 9개 영상 중 8개', '그림 4에서 FlashDepth보다 스케일 변동이 작았습니다.'],
   motion: ['카메라 운동 + 국소 운동', '배경점과 도구 끝의 실제 위치를 비교합니다.'],
   warp: ['기하학적 깊이 잔차', '재투영한 깊이와 새 시점의 깊이를 비교합니다.'],
   weight: ['C · Huber(e) − λ log C', '작은 신뢰도에도 비용이 생깁니다.'],
@@ -112,12 +124,12 @@ function Movie({ episode, cues }) {
         }}
       >
         <text x="25" y="47" fontSize="17" fontFamily={fixed} fill={C.muted}>
-          {['ablation', 'results', 'timer', 'frontier'].includes(scene.id)
+          {['ablation', 'results', 'timer', 'frontier', 'streambench'].includes(scene.id)
             ? 'REPORTED MEASUREMENT'
             : 'SCHEMATIC'}
         </text>
         <text x="632" textAnchor="end" y="47" fontSize="18" fill={C.muted}>
-          {['ablation', 'results', 'timer', 'frontier'].includes(scene.id)
+          {['ablation', 'results', 'timer', 'frontier', 'streambench'].includes(scene.id)
             ? '원문 보고값'
             : '설명용 예시'}
         </text>
