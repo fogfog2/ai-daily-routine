@@ -16,6 +16,15 @@ import {
   Point,
 } from './research-drawing';
 import { NewScene, NewComparison, newResults } from './research-2026-scenes';
+import { foundationScenes, foundationComparisons, foundationResults } from './foundation-scenes';
+import {
+  applicationScenes,
+  applicationComparisons,
+  applicationResults,
+} from './vision-applications';
+const additionalScenes = { ...foundationScenes, ...applicationScenes };
+const additionalComparisons = { ...foundationComparisons, ...applicationComparisons };
+
 function SourceMatrix({ sparse = false, progress = 1, row = 3 }) {
   const step = 33,
     left = 185,
@@ -423,6 +432,8 @@ function ColorGrid({ progress, idx }) {
 }
 const results = {
   ...newResults,
+  ...foundationResults,
+  ...applicationResults,
   corrResult: {
     caption: '표 1 · 고해상도 전체 추론',
     heads: ['모델', '실행 시간 감소'],
@@ -514,6 +525,7 @@ function Evidence({ scene, idx, phase }) {
 }
 export function ResearchScene({ scene, idx, phase, total }) {
   if (results[scene]) return <Evidence {...{ scene, idx, phase }} />;
+  if (additionalScenes[scene]) return additionalScenes[scene]({ idx, phase, total });
   switch (scene) {
     case 'corrPairs':
       return (
@@ -555,6 +567,7 @@ export function ResearchScene({ scene, idx, phase, total }) {
   }
 }
 export function ResearchCompare({ id, second }) {
+  if (additionalComparisons[id]) return additionalComparisons[id](second);
   switch (id) {
     case 'flow-correlation':
       return <SourceMatrix sparse={second} />;

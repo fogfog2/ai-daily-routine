@@ -104,6 +104,8 @@ EPISODES = {
 for episode_id in (
     "flow-correlation", "gyrodvd", "mobile-raw-denoising", "car-sam", "fastgamer",
     "spectral-mobile-color", "verifier-point-tracking", "nuwa-vit", "seele-3dgs", "pr-iqa",
+    "yolox-simota", "soft-nms", "vit-patch-tokens", "clip-zero-shot", "controlnet-zero-conv",
+    "bilalora-dehazing", "budget-vision-nas", "gradient-bit-allocation", "moeclip-patches", "stereo-training-data",
 ):
     spec = json.loads((STUDIO / f"{episode_id}.json").read_text(encoding="utf-8"))
     comparison = spec["comparison"]

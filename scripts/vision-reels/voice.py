@@ -3,6 +3,7 @@
 import argparse
 import hashlib
 import json
+import re
 import subprocess
 from pathlib import Path
 
@@ -12,6 +13,12 @@ from supertonic import TTS
 
 HERE = Path(__file__).resolve().parent
 TERMS = {
+    "심오티에이": "SimOTA",
+    "사십오 점 영": "45.0",
+    "사십칠 점 삼": "47.3",
+    "십일 점 일": "11.1",
+    "영 점 사육사": "0.464",
+    "영 점 육이이": "0.622",
     "알티 디트르 버전 포": "RT-DETRv4",
     "알티 디트르 버전 투 라지": "RT-DETRv2-L",
     "감 모듈": "GAM 모듈",
@@ -38,6 +45,7 @@ TERMS = {
     "영 점 삼칠육": "0.376",
     "영 점 삼삼오": "0.335",
     "영 점 사구": "0.49",
+    "영 점 구팔이 됩니다": "0.98이 됩니다",
     "영 점 구팔": "0.98",
     "영 점 공구": "0.09",
     "영 점 팔오삼": "0.853",
@@ -78,8 +86,14 @@ TERMS = {
 
 
 def caption(text):
-    for spoken, written in TERMS.items():
-        text = text.replace(spoken, written)
+    # Longer spoken numbers can contain shorter entries, e.g. 47.3 contains 7.3.
+    for spoken in sorted(TERMS, key=len, reverse=True):
+        if re.fullmatch(r"[영공일이삼사오육칠팔구십백천만]+ 점 [영공일이삼사오육칠팔구]+", spoken):
+            # Match at the start of a number, not inside a larger numeral.
+            pattern = r"(?<![영공일이삼사오육칠팔구십백천만])" + spoken + r"(?![영공일이삼사오육칠팔구])"
+            text = re.sub(pattern, TERMS[spoken], text)
+        else:
+            text = text.replace(spoken, TERMS[spoken])
     return text
 
 

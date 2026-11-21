@@ -48,3 +48,24 @@ function Point({ x, y, c = amber }) {
   );
 }
 export { mint, amber, blue, ink, dim, line, panel, range, clamp, mix, Text, Tile, Arrow, Point };
+
+const pad = 28;
+function Caption({ children, foot = false }) {
+  return (
+    <Text x={pad} y={foot ? 450 : 106} color={foot ? mint : dim} size={22}>
+      {children}
+    </Text>
+  );
+}
+
+function SignalBox({ x, y, w = 185, label, color = blue }) {
+  return (
+    <g>
+      <Tile x={x} y={y} w={w} h={59} border={color} />
+      <Text x={x + w / 2} y={y + 37} anchor="middle" color={color} size={22}>
+        {label}
+      </Text>
+    </g>
+  );
+}
+export { Caption, SignalBox };

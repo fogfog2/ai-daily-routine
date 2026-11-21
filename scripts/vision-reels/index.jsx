@@ -18,6 +18,16 @@ import tracking from './verifier-point-tracking.json';
 import nuwa from './nuwa-vit.json';
 import seele from './seele-3dgs.json';
 import iqa from './pr-iqa.json';
+import simota from './yolox-simota.json';
+import softNms from './soft-nms.json';
+import patchTokens from './vit-patch-tokens.json';
+import clipZeroShot from './clip-zero-shot.json';
+import controlNet from './controlnet-zero-conv.json';
+import bilaLora from './bilalora-dehazing.json';
+import budgetNas from './budget-vision-nas.json';
+import gradientBits from './gradient-bit-allocation.json';
+import moeClip from './moeclip-patches.json';
+import stereoData from './stereo-training-data.json';
 import { ResearchScene, ResearchCompare } from './cvpr-graphics';
 const episodes = [
   depth,
@@ -36,6 +46,16 @@ const episodes = [
   nuwa,
   seele,
   iqa,
+  simota,
+  softNms,
+  patchTokens,
+  clipZeroShot,
+  controlNet,
+  bilaLora,
+  budgetNas,
+  gradientBits,
+  moeClip,
+  stereoData,
 ];
 const labels = {
   'rt-detr-v4': 'RT-DETRv4',

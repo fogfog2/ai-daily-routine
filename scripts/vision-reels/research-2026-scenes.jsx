@@ -1,5 +1,7 @@
 import React from 'react';
 import {
+  Caption,
+  SignalBox,
   mint,
   amber,
   blue,
@@ -14,15 +16,6 @@ import {
   Arrow,
   Point,
 } from './research-drawing';
-
-const pad = 28;
-function Caption({ children, foot = false }) {
-  return (
-    <Text x={pad} y={foot ? 450 : 106} color={foot ? mint : dim} size={22}>
-      {children}
-    </Text>
-  );
-}
 
 const spectra = [
   [0.2, 0.8, 0.7, 0.3, 0.4, 0.6],
@@ -123,16 +116,6 @@ function SensorSample({ progress }) {
   );
 }
 
-function SignalBox({ x, y, w = 185, label, color = blue }) {
-  return (
-    <g>
-      <Tile x={x} y={y} w={w} h={59} border={color} />
-      <Text x={x + w / 2} y={y + 37} anchor="middle" color={color} size={22}>
-        {label}
-      </Text>
-    </g>
-  );
-}
 function Fusion({ total }) {
   return (
     <g>
