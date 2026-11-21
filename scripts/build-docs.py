@@ -12,6 +12,7 @@ import sys
 
 sys.path.insert(0, str(pathlib.Path(__file__).parent))
 from catalog import DOCS
+from vision_reels import insert as insert_vision_reel
 
 DOCS_DIR = pathlib.Path(__file__).parent.parent / "site-pages" / "docs"
 
@@ -102,6 +103,8 @@ def process(path: pathlib.Path, title: str) -> str:
         html = html[: m.end()] + nav_html(title) + html[m.end():]
     else:
         html = nav_html(title) + html
+
+    html = insert_vision_reel(html, path.stem)
 
     # 매 실행마다 빈 줄이 한 줄씩 쌓여 49편 전체가 '수정됨'으로 잡히던 문제.
     # 자동 루틴이 매일 도는 이상 무의미한 커밋이 계속 생기므로 여기서 정규화한다.
