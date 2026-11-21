@@ -25,6 +25,7 @@ python3 catalog.py
 python3 - "$PAGES" <<'PY'
 import json, pathlib, sys
 from catalog import STAGES, TAGS, DOCS, url, href, validate
+from vision_reels import EPISODES
 
 validate()
 pages = pathlib.Path(sys.argv[1])
@@ -40,6 +41,7 @@ for row in DOCS:
         "updated": d, "slug": slug, "tags": tags,
         "url": href(slug) if local else url(uid, slug),
         "local": local,
+        "hasVideo": local and slug in EPISODES,
     })
 
 # 실제로 쓰인 태그만 내보낸다 — 0편짜리 필터 버튼이 생기면 혼란스럽다
