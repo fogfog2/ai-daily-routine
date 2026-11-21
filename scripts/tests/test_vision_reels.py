@@ -29,4 +29,4 @@ class VisionReelsTest(unittest.TestCase):
                 self.assertTrue(result.endswith(ARTICLE.split("\n", 1)[1]))
 
     def test_unpublished_article(self):
-        self.assertEqual(insert(ARTICLE, "optical-flow"), ARTICLE)
+        self.assertEqual(insert(ARTICLE, "embeddings"), ARTICLE)

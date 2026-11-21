@@ -8,7 +8,13 @@ import sr from './mobile-int8-sr.json';
 import loma from './loma.json';
 import stream from './endostreamdepth.json';
 import rtv4 from './rt-detr-v4.json';
-const episodes = [depth, atto, sr, loma, stream, rtv4];
+import correlation from './flow-correlation.json';
+import gyro from './gyrodvd.json';
+import raw from './mobile-raw-denoising.json';
+import car from './car-sam.json';
+import gain from './fastgamer.json';
+import { ResearchScene, ResearchCompare } from './cvpr-graphics';
+const episodes = [depth, atto, sr, loma, stream, rtv4, correlation, gyro, raw, car, gain];
 const labels = {
   'rt-detr-v4': 'RT-DETRv4',
   loma: 'LoMa',
@@ -77,7 +83,12 @@ function Movie({ episode, cues }) {
   const chunks = captionParts(cue.text);
   const spoken =
     chunks.length === 1 || phase < chunks[0].length / cue.text.length ? chunks[0] : chunks[1];
-  const [headline, detail] = notes[scene.id];
+  const [headline, detail] = scene.note || notes[scene.id];
+  const reported =
+    scene.reported ??
+    ['ablation', 'results', 'timer', 'frontier', 'streambench', 'distillationresult'].includes(
+      scene.id,
+    );
   const clock = (s) => Math.floor(s / 60) + ':' + String(Math.floor(s % 60)).padStart(2, '0');
   return (
     <AbsoluteFill
@@ -103,7 +114,7 @@ function Movie({ episode, cues }) {
       >
         <b>AI CONCEPTS</b>
         <span style={{ color: C.muted, fontFamily: fixed, fontSize: 20 }}>
-          {labels[episode.id]}
+          {episode.label || labels[episode.id]}
         </span>
       </div>
       <div
@@ -133,30 +144,16 @@ function Movie({ episode, cues }) {
         }}
       >
         <text x="25" y="47" fontSize="17" fontFamily={fixed} fill={C.muted}>
-          {[
-            'ablation',
-            'results',
-            'timer',
-            'frontier',
-            'streambench',
-            'distillationresult',
-          ].includes(scene.id)
-            ? 'REPORTED MEASUREMENT'
-            : 'SCHEMATIC'}
+          {reported ? 'REPORTED MEASUREMENT' : 'SCHEMATIC'}
         </text>
         <text x="632" textAnchor="end" y="47" fontSize="18" fill={C.muted}>
-          {[
-            'ablation',
-            'results',
-            'timer',
-            'frontier',
-            'streambench',
-            'distillationresult',
-          ].includes(scene.id)
-            ? '원문 보고값'
-            : '설명용 예시'}
+          {reported ? '원문 보고값' : '설명용 예시'}
         </text>
-        <Diagram scene={scene.id} idx={idx} phase={phase} scenePhase={phaseAll} />
+        {episode.comparison ? (
+          <ResearchScene scene={scene.id} idx={idx} phase={phase} total={phaseAll} />
+        ) : (
+          <Diagram scene={scene.id} idx={idx} phase={phase} scenePhase={phaseAll} />
+        )}
       </svg>
       <div style={{ marginTop: 26, paddingLeft: 18, borderLeft: '4px solid ' + C.gold }}>
         <div style={{ fontSize: 32, fontWeight: 700, letterSpacing: -0.7, color: C.gold }}>
@@ -223,6 +220,13 @@ function Movie({ episode, cues }) {
     </AbsoluteFill>
   );
 }
+function ResearchDemo({ id, second }) {
+  return (
+    <svg width="660" height="430" viewBox="0 65 660 430" style={{ background: C.panel }}>
+      <ResearchCompare id={id} second={second} />
+    </svg>
+  );
+}
 function Root() {
   return (
     <>
@@ -251,7 +255,7 @@ function Root() {
           <Composition
             key={'demo-' + episode.id}
             id={'demo-' + episode.id}
-            component={Demo}
+            component={episode.comparison ? ResearchDemo : Demo}
             defaultProps={{ id: episode.id, second: false }}
             width={660}
             height={430}

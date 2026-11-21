@@ -100,6 +100,14 @@ EPISODES = {
         )
     ],
 }
+# New episodes keep their article and comparison copy with their narration.
+for episode_id in ("flow-correlation", "gyrodvd", "mobile-raw-denoising", "car-sam", "fastgamer"):
+    spec = json.loads((STUDIO / f"{episode_id}.json").read_text(encoding="utf-8"))
+    comparison = spec["comparison"]
+    EPISODES.setdefault(spec["document"], []).append(
+        (episode_id, spec["label"], comparison["prompt"], comparison["options"])
+    )
+
 START = "<!-- vision-reel:start -->"
 END = "<!-- vision-reel:end -->"
 
