@@ -15,8 +15,13 @@
 | 9 | 노이즈 제거 · 모바일 RAW | 1분 45초 | 이전 프레임을 어떤 위치에서 결합하고 배포 비용을 어떻게 측정하는가? |
 | 10 | 분할 · CAR-SAM | 1분 52초 | 4비트 양자화가 양방향 어텐션에 미치는 오차를 어떻게 보정하는가? |
 | 11 | HDR 톤 매핑 · FastGaMer | 1분 44초 | 채널별 게인과 국소·전역 보정을 조합하면 어떤 색을 표현할 수 있는가? |
+| 12 | ISP · 다중분광 색 보정 | 1분 47초 | RGB가 같을 때 분광 대역을 늘리면 무엇을 구별할 수 있는가? |
+| 13 | 점 추적 · Verifier | 1분 55초 | 가림 뒤 두 후보가 갈라질 때 좌표와 가시성을 각각 어떻게 선택하는가? |
+| 14 | 가지치기 · NuWa | 1분 51초 | 목표 클래스에 맞춰 중간 채널을 지우면 양쪽 선형층의 연결과 기기 지연은 어떻게 달라지는가? |
+| 15 | 3D 가우시안 · SEELE | 1분 56초 | 시점별 선별과 픽셀 그룹의 기여도 검사가 각각 어떤 계산을 줄이는가? |
+| 16 | 화질 평가 · PR-IQA | 1분 54초 | 참조 사진과 겹치는 영역과 새로 보인 영역은 어떤 근거로 화질을 판단하는가? |
 
-열한 편의 원문과 장면별 대사는 각 에피소드 JSON에서 관리한다. 영상·자막·시간표 대본·비교 도식은 공개 사이트의 `media/vision/<id>/`에 함께 들어간다. 입력 장면은 합성 예시이며 실측 그래프는 논문 또는 개발사의 공개 수치를 사용한다.
+열여섯 편의 원문과 장면별 대사는 각 에피소드 JSON에서 관리한다. 영상·자막·시간표 대본·비교 도식은 공개 사이트의 `media/vision/<id>/`에 함께 들어간다. 입력 장면은 합성 예시이며 실측 그래프는 논문 또는 개발사의 공개 수치를 사용한다.
 
 ## 후속 두 편의 스토리보드
 
@@ -31,8 +36,8 @@ Node.js, FFmpeg, 한글 글꼴(Noto Sans CJK KR), Python 환경에 Supertonic 1.
 ```sh
 npm install
 python -m pip install 'supertonic==1.3.1' soundfile numpy
-python voice.py /path/to/supertonic-3 /tmp/vision-work endoda3 rf-detr-atto mobile-int8-sr loma endostreamdepth rt-detr-v4 flow-correlation gyrodvd mobile-raw-denoising car-sam fastgamer
-node render.cjs /tmp/vision-work ../../site-pages/media/vision endoda3 rf-detr-atto mobile-int8-sr loma endostreamdepth rt-detr-v4 flow-correlation gyrodvd mobile-raw-denoising car-sam fastgamer
+python voice.py /path/to/supertonic-3 /tmp/vision-work endoda3 rf-detr-atto mobile-int8-sr loma endostreamdepth rt-detr-v4 flow-correlation gyrodvd mobile-raw-denoising car-sam fastgamer spectral-mobile-color verifier-point-tracking nuwa-vit seele-3dgs pr-iqa
+node render.cjs /tmp/vision-work ../../site-pages/media/vision endoda3 rf-detr-atto mobile-int8-sr loma endostreamdepth rt-detr-v4 flow-correlation gyrodvd mobile-raw-denoising car-sam fastgamer spectral-mobile-color verifier-point-tracking nuwa-vit seele-3dgs pr-iqa
 ```
 
 `voice.py`는 문장별 음성을 작업 디렉터리에 캐시한다. 대사가 바뀐 문장은 다시 합성한다. 장면 안에서는 문장별 발화 길이에 맞춰 자막을 배치하고, 장면 전체는 편집 시간표에 맞춘다. 영상은 720×1280 H.264/AAC이며 한국어 자막을 영상에 표시한다. WebVTT와 시간표 대본도 따로 제공한다. 저장소 루트에서 `python scripts/build-docs.py`를 실행하면 대상 글의 제목 아래에 영상 패널을 붙인다.

@@ -101,7 +101,10 @@ EPISODES = {
     ],
 }
 # New episodes keep their article and comparison copy with their narration.
-for episode_id in ("flow-correlation", "gyrodvd", "mobile-raw-denoising", "car-sam", "fastgamer"):
+for episode_id in (
+    "flow-correlation", "gyrodvd", "mobile-raw-denoising", "car-sam", "fastgamer",
+    "spectral-mobile-color", "verifier-point-tracking", "nuwa-vit", "seele-3dgs", "pr-iqa",
+):
     spec = json.loads((STUDIO / f"{episode_id}.json").read_text(encoding="utf-8"))
     comparison = spec["comparison"]
     EPISODES.setdefault(spec["document"], []).append(

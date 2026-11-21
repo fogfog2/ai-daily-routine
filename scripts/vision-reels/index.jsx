@@ -13,8 +13,30 @@ import gyro from './gyrodvd.json';
 import raw from './mobile-raw-denoising.json';
 import car from './car-sam.json';
 import gain from './fastgamer.json';
+import spectral from './spectral-mobile-color.json';
+import tracking from './verifier-point-tracking.json';
+import nuwa from './nuwa-vit.json';
+import seele from './seele-3dgs.json';
+import iqa from './pr-iqa.json';
 import { ResearchScene, ResearchCompare } from './cvpr-graphics';
-const episodes = [depth, atto, sr, loma, stream, rtv4, correlation, gyro, raw, car, gain];
+const episodes = [
+  depth,
+  atto,
+  sr,
+  loma,
+  stream,
+  rtv4,
+  correlation,
+  gyro,
+  raw,
+  car,
+  gain,
+  spectral,
+  tracking,
+  nuwa,
+  seele,
+  iqa,
+];
 const labels = {
   'rt-detr-v4': 'RT-DETRv4',
   loma: 'LoMa',
